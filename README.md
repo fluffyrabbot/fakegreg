@@ -65,3 +65,7 @@ Once skills are created:
 See `greg-meridian.png` for the visual target.
 
 This is a living project to turn Greg's taste into portable, improvable skills.
+
+**GitHub**: https://github.com/fluffyrabbot/fakegreg
+
+See `SKILL-DESIGN-BEST-PRACTICES.md` for the meta-research synthesis that informed the skill design.
