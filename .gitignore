@@ -1,0 +1,33 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.idea/
+.vscode/
+*.swp
+*~
+
+# Node (if any tooling added later)
+node_modules/
+npm-debug.log
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# Temp / generated that we don't want in repo by default
+*.log
+tmp/
+temp/
+
+# Screenshots that are large binary artifacts (keep a few references, ignore bulk)
+# Uncomment if you want to ignore all pngs in root:
+# *.png
+
+# Keep the skill references and key screenshots committed for this project.
+# Add user-specific ignores here.
+
+# Grok local overrides (rare)
+.grok/local-*

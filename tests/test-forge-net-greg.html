@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ForgeNet — Agents without borders.</title>
+<style>
+:root {
+  --bg: #0a0a0f;
+  --fg: #f5f5f7;
+  --accent: #a5b4fc;
+  --muted: #888;
+}
+body { margin:0; background:var(--bg); color:var(--fg); font-family:system-ui, -apple-system, sans-serif; }
+.wrap { max-width:1140px; margin:0 auto; padding:0 24px; }
+nav { position:sticky; top:0; background:rgba(10,10,15,0.92); backdrop-filter:blur(12px); border-bottom:1px solid #222; z-index:100; }
+.nav-inner { display:flex; align-items:center; justify-content:space-between; padding:16px 0; }
+.brand { font-weight:600; display:flex; align-items:center; gap:8px; }
+.mark { background:#222; padding:2px 8px; border-radius:4px; font-family:monospace; }
+.nav-links { display:flex; gap:24px; align-items:center; }
+.nav-links a { color:#ccc; text-decoration:none; font-size:14px; }
+.btn { display:inline-flex; align-items:center; padding:10px 18px; border-radius:6px; font-size:14px; text-decoration:none; font-weight:500; }
+.btn-primary { background:#fff; color:#000; }
+.btn-ghost { border:1px solid #444; color:#ddd; }
+
+.hero { padding:90px 0 50px; }
+.hero-grid { display:grid; grid-template-columns:1fr 1fr; gap:70px; align-items:center; }
+h1 { font-size:clamp(44px,5.8vw,70px); line-height:1.02; margin:10px 0; }
+h1 em { font-style:normal; color:var(--accent); }
+.hero-sub { font-size:17px; color:#aaa; max-width:480px; }
+.hero-cta { display:flex; gap:12px; margin-top:28px; }
+.hero-note { margin-top:14px; font-size:13px; color:#555; display:flex; align-items:center; gap:6px; }
+
+.viz { position:relative; width:100%; max-width:520px; aspect-ratio:1/1; margin:0 auto; }
+#mesh { width:100%; height:100%; display:block; background:#111; border-radius:50%; }
+.hud { position:absolute; font-size:11px; padding:3px 9px; background:rgba(0,0,0,.65); border:1px solid #333; border-radius:2px; font-family:monospace; }
+.hud-tl { top:18px; left:18px; } .hud-br { bottom:18px; right:18px; }
+
+.stats { padding:30px 0 70px; }
+.stats-grid { display:flex; gap:48px; flex-wrap:wrap; }
+.stat { min-width:120px; }
+.num { font-size:40px; font-weight:600; }
+.lab { font-size:12px; color:#666; }
+
+.section { padding:60px 0; border-top:1px solid #222; }
+.kicker { font-family:monospace; font-size:12px; color:#555; letter-spacing:.6px; margin-bottom:6px; }
+
+.feat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:26px; margin-top:28px; }
+.feat { }
+.feat .ico { font-size:20px; margin-bottom:10px; }
+.feat h3 { margin:0 0 6px; font-size:17px; }
+.feat .tag { font-size:10px; font-family:monospace; color:#555; margin-top:8px; }
+
+.code-window { background:#111; border:1px solid #222; border-radius:8px; overflow:hidden; }
+.code-bar { display:flex; justify-content:space-between; align-items:center; padding:8px 14px; background:#1a1a1f; font-size:12px; }
+pre { margin:0; padding:16px; font-size:13px; overflow:auto; }
+
+.impact { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; margin-top:24px; }
+.impact .big { font-size:34px; font-weight:600; line-height:1; }
+.impact .desc { font-size:13px; color:#777; margin-top:4px; }
+
+.cta { background:#111; padding:48px 40px; border-radius:12px; border:1px solid #222; text-align:center; margin-top:40px; }
+footer { padding:50px 0 30px; color:#444; font-size:13px; border-top:1px solid #222; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-inner">
+    <div class="brand"><span class="mark">F</span> ForgeNet</div>
+    <div class="nav-links">
+      <a href="#mesh">Mesh</a>
+      <a href="#agents">Agents</a>
+      <a href="#scale">Scale</a>
+      <a href="#access" class="btn btn-primary" style="padding:8px 16px;">Get access</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="kicker">ForgeNet-1 · Global mesh</div>
+      <h1>Agents,<br><em>without borders.</em></h1>
+      <p class="hero-sub">A living mesh of specialized agents running across 187 regions. Sub-20ms coordination. One protocol. Every team, everywhere.</p>
+      <div class="hero-cta">
+        <a href="#access" class="btn btn-primary">Request access →</a>
+        <a href="#agents" class="btn btn-ghost">Read the protocol</a>
+      </div>
+      <div class="hero-note">• Now orchestrating work in 183 countries</div>
+    </div>
+    <div class="viz">
+      <div class="mesh-glow" style="position:absolute;inset:-40px;background:radial-gradient(circle,rgba(165,180,252,0.09),transparent 65%);border-radius:50%;pointer-events:none;z-index:0;"></div>
+      <canvas id="mesh" width="520" height="520" style="position:relative;z-index:1"></canvas>
+      <div class="hud hud-tl"><span style="color:#a5b4fc">LIVE MESH</span></div>
+      <div class="hud hud-br">AGENTS <span style="color:#a5b4fc">12,481</span></div>
+    </div>
+  </div>
+</header>
+
+<section class="stats">
+  <div class="wrap stats-grid">
+    <div class="stat"><div class="num">187</div><div class="lab">Regions active</div></div>
+    <div class="stat"><div class="num">18<span style="font-size:22px">ms</span></div><div class="lab">Median coordination</div></div>
+    <div class="stat"><div class="num">1400+</div><div class="lab">Specialists</div></div>
+    <div class="stat"><div class="num">4.1<span style="font-size:22px">T</span></div><div class="lab">Agent actions / day</div></div>
+  </div>
+</section>
+
+<section class="section" id="agents">
+  <div class="wrap">
+    <div class="kicker">// the agents</div>
+    <h2>Specialists that actually work together.</h2>
+    <div class="feat-grid">
+      <div class="feat">
+        <div class="ico">◇</div>
+        <h3>Research Swarm</h3>
+        <p>Deep retrieval + synthesis agents that stay in sync across the mesh without duplicate work.</p>
+        <div class="tag">CONTEXT AWARE · NO DUPE QUERIES</div>
+      </div>
+      <div class="feat">
+        <div class="ico">◈</div>
+        <h3>Code Forge</h3>
+        <p>Write, review, and ship production code with shared memory of your entire codebase and infra.</p>
+        <div class="tag">MULTI-REPO · TEST AWARE</div>
+      </div>
+      <div class="feat">
+        <div class="ico">◍</div>
+        <h3>Ops Mesh</h3>
+        <p>Monitor, diagnose, and heal distributed systems. One view. Every region.</p>
+        <div class="tag">AUTONOMOUS FIXES</div>
+      </div>
+      <div class="feat">
+        <div class="ico">▲</div>
+        <h3>Strategy Lens</h3>
+        <p>Long-horizon planning agents that reason over business signals and market data in real time.</p>
+        <div class="tag">P50 &lt; 180ms · EXPLAINABLE</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="mesh">
+  <div class="wrap" style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start">
+    <div>
+      <div class="kicker">// the mesh</div>
+      <h2 style="margin:6px 0 18px;font-size:34px">One protocol.<br>Every region.</h2>
+      <p>ForgeNet isn't a single cluster with a load balancer. <strong>It's 187 independent agent runtimes</strong> talking through a low-latency mesh protocol.</p>
+      <p>Agents migrate context intelligently. Work continues even if a region drops. The team in Berlin sees the same state as the team in Singapore.</p>
+      <p>Open protocol. <strong>Works with any SDK by changing the endpoint.</strong></p>
+    </div>
+    <div class="code-window">
+      <div class="code-bar">
+        <span>quickstart.sh</span>
+        <button onclick="copyCode(this)" style="font-size:11px;padding:3px 9px;border:1px solid #333;background:#222;color:#ddd;border-radius:3px;cursor:pointer">Copy</button>
+      </div>
+<pre style="margin:0;padding:16px;font-size:13px">curl https://api.forgenet.ai/v1/mesh \\
+  -H "Authorization: Bearer $FORGE_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+  "task": "plan and ship feature X",
+  "context": { "repo": "acme/web" }
+}'</pre>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="scale">
+  <div class="wrap">
+    <div class="kicker">// in production</div>
+    <h2>Already moving real work at scale.</h2>
+    <div class="impact">
+      <div><div class="big">4.1T</div><div class="desc">Agent actions coordinated daily</div></div>
+      <div><div class="big">99.97%</div><div class="desc">Mesh availability last 12 months</div></div>
+      <div><div class="big">22ms</div><div class="desc">P99 cross-region handoff</div></div>
+      <div><div class="big">183</div><div class="desc">Countries with active teams</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="access" style="padding-bottom:80px">
+  <div class="wrap">
+    <div class="cta">
+      <h2 style="margin-bottom:12px">Bring your agents to the mesh.</h2>
+      <p style="color:#aaa;margin-bottom:24px">ForgeNet is in limited GA. Get an access key and start coordinating across the planet in minutes.</p>
+      <div>
+        <a href="#" class="btn btn-primary">Request access →</a>
+        <a href="#" class="btn btn-ghost" style="margin-left:10px">Talk to the team</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="wrap">
+  ForgeNet · 187 regions · 183 countries · One living mesh of agents.
+</footer>
+
+<script>
+// Simple canvas mesh visualization (Greg style - interactive, clean)
+const canvas = document.getElementById('mesh');
+const ctx = canvas.getContext('2d');
+let nodes = [], t = 0;
+
+function resize() {
+  const dpr = window.devicePixelRatio || 1;
+  const size = Math.min(520, window.innerWidth * 0.9);
+  canvas.width = size * dpr;
+  canvas.height = size * dpr;
+  canvas.style.width = size + 'px';
+  canvas.style.height = size + 'px';
+  ctx.scale(dpr, dpr);
+}
+window.addEventListener('resize', () => { resize(); draw(); });
+
+function init() {
+  nodes = [];
+  for (let i = 0; i < 18; i++) {
+    nodes.push({
+      x: 0.5 + Math.cos(i) * (0.12 + Math.random()*0.22),
+      y: 0.5 + Math.sin(i*1.7) * (0.12 + Math.random()*0.22),
+      r: 1.5 + Math.random(),
+      phase: Math.random() * Math.PI * 2
+    });
+  }
+}
+
+function draw() {
+  const w = canvas.width / (window.devicePixelRatio || 1);
+  const h = canvas.height / (window.devicePixelRatio || 1);
+  ctx.clearRect(0,0,w,h);
+  const cx = w/2, cy = h/2, R = Math.min(w,h)*0.42;
+
+  // faint rings
+  ctx.strokeStyle = '#222';
+  ctx.lineWidth = 1;
+  for (let r = 0.6; r < 1.05; r += 0.18) {
+    ctx.beginPath();
+    ctx.arc(cx, cy, R * r, 0, Math.PI*2);
+    ctx.stroke();
+  }
+
+  // connections
+  ctx.strokeStyle = 'rgba(165,180,252,0.18)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i+1; j < nodes.length; j++) {
+      const a = nodes[i], b = nodes[j];
+      const ax = cx + (a.x-0.5)*R*2, ay = cy + (a.y-0.5)*R*2;
+      const bx = cx + (b.x-0.5)*R*2, by = cy + (b.y-0.5)*R*2;
+      ctx.beginPath();
+      ctx.moveTo(ax,ay);
+      ctx.lineTo(bx,by);
+      ctx.stroke();
+    }
+  }
+
+  // nodes
+  nodes.forEach((n,i) => {
+    const x = cx + (n.x-0.5)*R*2;
+    const y = cy + (n.y-0.5)*R*2;
+    const pulse = 0.8 + Math.sin(t*0.015 + n.phase) * 0.4;
+    ctx.fillStyle = i % 3 === 0 ? '#a5b4fc' : '#667';
+    ctx.beginPath();
+    ctx.arc(x, y, n.r * pulse, 0, Math.PI*2);
+    ctx.fill();
+  });
+
+  // subtle center glow
+  const grad = ctx.createRadialGradient(cx,cy,4,cx,cy,R*0.6);
+  grad.addColorStop(0,'rgba(165,180,252,0.07)');
+  grad.addColorStop(1,'transparent');
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.arc(cx,cy,R*0.6,0,Math.PI*2);
+  ctx.fill();
+
+  t++;
+  requestAnimationFrame(draw);
+}
+
+function copyCode(btn) {
+  const pre = btn.parentElement.nextElementSibling.innerText;
+  navigator.clipboard.writeText(pre.trim()).then(() => {
+    const old = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = old, 1400);
+  });
+}
+
+window.onload = () => {
+  resize();
+  init();
+  draw();
+  // fake live counter
+  const conn = document.querySelector('.hud-br');
+  setInterval(() => {
+    if (conn) conn.innerHTML = 'AGENTS <span style="color:#a5b4fc">' + (12000 + Math.floor(Math.random()*900)) + '</span>';
+  }, 2400);
+};
+</script>
+</body>
+</html>
