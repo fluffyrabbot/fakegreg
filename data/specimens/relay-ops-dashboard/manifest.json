@@ -9,7 +9,8 @@
     "model": "fakegreg workflow",
     "skill": "greg-direct-repro",
     "generated_at": "2026-06-22",
-    "provenance": "Added to widen the corpus beyond landing pages while preserving Greg primitives."
+    "provenance": "synthetic_seed",
+    "notes": "Manually authored corpus expansion to widen surfaces beyond landing pages."
   },
   "artifacts": {
     "raw_output_path": "output.html",
@@ -26,13 +27,30 @@
     "implementation": 89,
     "greg_fidelity": 87
   },
+  "score_meta": {
+    "scorer": "human",
+    "scored_at": "2026-06-22",
+    "method": "manual crofbench-style rubric against Meridian and SENSIBILITIES"
+  },
   "acceptance": {
     "minimum_score": 84,
     "maximum_score": null,
-    "required_sections": ["hero", "metrics", "code_block", "cta"],
-    "required_visuals": ["canvas_or_svg"],
+    "required_sections": [
+      "hero",
+      "metrics",
+      "code_block",
+      "cta"
+    ],
+    "required_visuals": [
+      "canvas_or_svg"
+    ],
     "minimum_kickers": 3,
     "analysis_shape": "greg_ui_analysis_v1"
   },
-  "tags": ["candidate", "dashboard", "ops", "corpus_expansion"]
+  "tags": [
+    "candidate",
+    "dashboard",
+    "ops",
+    "corpus_expansion"
+  ]
 }

@@ -9,7 +9,8 @@
     "model": "greg-2-ultra",
     "skill": "greg-direct-repro",
     "generated_at": null,
-    "provenance": "Cleaned and reconstructed from the Meridian winner used as the repo's reference ceiling."
+    "provenance": "gallery_extract",
+    "notes": "Cleaned and reconstructed from the Meridian gallery winner; reference ceiling, not a live API capture."
   },
   "artifacts": {
     "raw_output_path": "output.html",
@@ -26,13 +27,31 @@
     "implementation": 95,
     "greg_fidelity": 97
   },
+  "score_meta": {
+    "scorer": "human",
+    "scored_at": "2026-06-22",
+    "method": "manual crofbench-style rubric against Meridian and SENSIBILITIES"
+  },
   "acceptance": {
     "minimum_score": 90,
     "maximum_score": null,
-    "required_sections": ["hero", "features", "code_block", "metrics", "cta"],
-    "required_visuals": ["canvas_or_svg"],
+    "required_sections": [
+      "hero",
+      "features",
+      "code_block",
+      "metrics",
+      "cta"
+    ],
+    "required_visuals": [
+      "canvas_or_svg"
+    ],
     "minimum_kickers": 3,
     "analysis_shape": "greg_ui_analysis_v1"
   },
-  "tags": ["gold", "reference", "landing", "meridian"]
+  "tags": [
+    "gold",
+    "reference",
+    "landing",
+    "meridian"
+  ]
 }

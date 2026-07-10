@@ -9,7 +9,8 @@
     "model": "fakegreg workflow",
     "skill": "greg-direct-repro",
     "generated_at": "2026-06-22",
-    "provenance": "Added to encode a framework-oriented specimen with a rendered preview."
+    "provenance": "synthetic_seed",
+    "notes": "Manually authored framework specimen with a rendered HTML preview."
   },
   "artifacts": {
     "raw_output_path": "output.tsx",
@@ -26,13 +27,31 @@
     "implementation": 86,
     "greg_fidelity": 82
   },
+  "score_meta": {
+    "scorer": "human",
+    "scored_at": "2026-06-22",
+    "method": "manual crofbench-style rubric against Meridian and SENSIBILITIES"
+  },
   "acceptance": {
     "minimum_score": 80,
     "maximum_score": null,
-    "required_sections": ["hero", "code_block", "metrics", "cta"],
-    "required_visuals": ["canvas_or_svg"],
+    "required_sections": [
+      "hero",
+      "code_block",
+      "metrics",
+      "cta"
+    ],
+    "required_visuals": [
+      "canvas_or_svg"
+    ],
     "minimum_kickers": 3,
     "analysis_shape": "greg_ui_analysis_v1"
   },
-  "tags": ["candidate", "pricing", "tsx", "framework", "corpus_expansion"]
+  "tags": [
+    "candidate",
+    "pricing",
+    "tsx",
+    "framework",
+    "corpus_expansion"
+  ]
 }

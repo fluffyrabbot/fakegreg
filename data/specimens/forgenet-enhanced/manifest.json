@@ -9,7 +9,8 @@
     "model": "fakegreg workflow",
     "skill": "greg-ui-enhance",
     "generated_at": "2026-06-21",
-    "provenance": "Enhanced from the direct ForgeNet specimen after analyzer-guided refinement."
+    "provenance": "skill_reproduction",
+    "notes": "Enhanced from forgenet-direct after analyzer-guided refinement in the fakegreg workflow."
   },
   "artifacts": {
     "raw_output_path": "output.html",
@@ -26,13 +27,31 @@
     "implementation": 88,
     "greg_fidelity": 85
   },
+  "score_meta": {
+    "scorer": "human",
+    "scored_at": "2026-06-22",
+    "method": "manual crofbench-style rubric against Meridian and SENSIBILITIES"
+  },
   "acceptance": {
     "minimum_score": 85,
     "maximum_score": null,
-    "required_sections": ["hero", "features", "code_block", "metrics", "cta"],
-    "required_visuals": ["canvas_or_svg"],
+    "required_sections": [
+      "hero",
+      "features",
+      "code_block",
+      "metrics",
+      "cta"
+    ],
+    "required_visuals": [
+      "canvas_or_svg"
+    ],
     "minimum_kickers": 3,
     "analysis_shape": "greg_ui_analysis_v1"
   },
-  "tags": ["candidate", "landing", "enhanced", "forgenet"]
+  "tags": [
+    "candidate",
+    "landing",
+    "enhanced",
+    "forgenet"
+  ]
 }

@@ -9,7 +9,8 @@
     "model": "n/a",
     "skill": null,
     "generated_at": "2026-06-22",
-    "provenance": "Written deliberately as a clean but generic control specimen."
+    "provenance": "synthetic_seed",
+    "notes": "Written deliberately as a clean but generic negative control."
   },
   "artifacts": {
     "raw_output_path": "output.html",
@@ -26,13 +27,26 @@
     "implementation": 62,
     "greg_fidelity": 24
   },
+  "score_meta": {
+    "scorer": "human",
+    "scored_at": "2026-06-22",
+    "method": "manual crofbench-style rubric against Meridian and SENSIBILITIES"
+  },
   "acceptance": {
     "minimum_score": 0,
     "maximum_score": 55,
-    "required_sections": ["hero", "cta"],
+    "required_sections": [
+      "hero",
+      "cta"
+    ],
     "required_visuals": [],
     "minimum_kickers": 0,
     "analysis_shape": "greg_ui_analysis_v1"
   },
-  "tags": ["anti_example", "control", "generic", "landing"]
+  "tags": [
+    "anti_example",
+    "control",
+    "generic",
+    "landing"
+  ]
 }

@@ -12,4 +12,20 @@ Each specimen is a strict bundle with:
 
 The manifest shape is documented in `schemas/specimen.schema.json`.
 
+## Required honesty fields
+
+```json
+"generator": {
+  "provenance": "real_api | gallery_extract | skill_reproduction | synthetic_seed",
+  "notes": "free-text caveats"
+},
+"score_meta": {
+  "scorer": "human | skill | script",
+  "scored_at": "YYYY-MM-DD or ISO datetime",
+  "method": "optional"
+}
+```
+
+Do **not** label skill reproductions or synthetic seeds as `real_api`. Acceptance enforces the enum and path safety.
+
 This turns examples into portable, testable dataset entries instead of loose artifacts.

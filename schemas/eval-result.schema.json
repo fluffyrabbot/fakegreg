@@ -3,6 +3,7 @@
   "$id": "https://fakegreg/eval-result.schema.json",
   "title": "fakegreg eval result",
   "type": "object",
+  "additionalProperties": false,
   "required": [
     "prompt_set",
     "created_at",
@@ -23,10 +24,56 @@
         "run"
       ]
     },
+    "run_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "skill_hashes": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "count": {
+          "type": "integer"
+        },
+        "passed": {
+          "type": "integer"
+        },
+        "failed": {
+          "type": "integer"
+        },
+        "mean_overall_score": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "mean_candidate_score": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "mean_reference_score": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      }
+    },
     "results": {
       "type": "array",
       "items": {
         "type": "object",
+        "additionalProperties": false,
         "required": [
           "prompt_id",
           "specimen_id",
@@ -43,6 +90,24 @@
           },
           "surface": {
             "type": "string"
+          },
+          "kind": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "provenance": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "scorer": {
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "overall_score": {
             "type": "number"
