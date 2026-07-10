@@ -24,7 +24,7 @@ Reproduce the UI sensibilities that make Greg-2 (especially ultra) win on crofbe
 - Sticky frosted nav, strong primary CTAs, ghost buttons, `.wrap` containers.
 
 ## Primary Seed Example
-Use the Meridian demo as the gold standard reference:
+Use the repo-root `references/` pack as the gold standard source of truth:
 
 ```html
 <!-- See references/meridian-greg.html for the full cleaned representative output -->
@@ -42,9 +42,12 @@ Key structural patterns from it (internalize):
 - Consistent footer.
 
 ## Instructions
-1. **Always start by loading references**:
+1. **Always start by loading repo-root references**:
    - Read `references/meridian-greg.html` (primary seed)
    - Read `references/SENSIBILITIES.md` for full distilled patterns
+   - Read `references/STYLE_PRIMITIVES.md` for reusable Greg building blocks
+   - Read `references/PAGE_ARCHETYPES.md` for surface-specific translation
+   - Read `references/ANTI_EXAMPLES.md` to avoid generic or Opus-like drift
    - View `references/greg-meridian.png` if available for visual target
 2. Understand current task and map it to a similar high-signal product landing / demo page or UI surface.
 3. Produce **complete, delightful, self-contained** output (prefer single-file HTML+Tailwind or vanilla CSS + JS for demos unless specified).
@@ -76,7 +79,7 @@ Key structural patterns from it (internalize):
 This is the *direct* repro skill. After using it:
 - Feed results into the analyzer skill for scoring.
 - Use enhancer for passes.
-- Add new generations (especially from real greg-2 via API) to references/.
+- Add new generations (especially from real greg-2 via API) to `data/specimens/` and promote only canonical examples into `references/`.
 
 ## When to call real Greg instead
 If you have a CROF_API_KEY and want ground-truth outputs:

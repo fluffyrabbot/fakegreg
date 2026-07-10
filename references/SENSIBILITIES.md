@@ -78,8 +78,8 @@ Source artifacts:
 - Human: "Does this feel like it could be the winning entry in a same-prompt gallery?"
 
 ## Sources for Refinement
-- `data/examples/meridian-greg.html` (primary)
-- Screenshots: greg-meridian.png (winning), opus-comparison.png, etc.
+- `references/meridian-greg.html` (primary)
+- Screenshots: `references/greg-meridian.png` (winning), `opus-comparison.png`, etc.
 - Live pages on greg.crof.ai for more generations.
 
 This doc will be updated as we extract more examples and run generations.

@@ -13,9 +13,12 @@ author: fakegreg
 Multi-pass refinement loop that pushes any UI toward the quality level of the Greg-2 Meridian winner.
 
 ## Core Loop (follow every time)
-1. **Load references**:
-   - SENSIBILITIES.md
-   - meridian-greg.html (the target)
+1. **Load repo-root references**:
+   - `references/SENSIBILITIES.md`
+   - `references/STYLE_PRIMITIVES.md`
+   - `references/PAGE_ARCHETYPES.md`
+   - `references/ANTI_EXAMPLES.md`
+   - `references/meridian-greg.html` (the target)
 2. Understand the current candidate (code or description or previous output).
 3. Run an internal "greg-ui-analyze" pass (use the exact rubric and output format from the analyzer skill).
 4. Produce one **focused, high-signal refinement pass**:
@@ -40,7 +43,7 @@ Multi-pass refinement loop that pushes any UI toward the quality level of the Gr
 2. `/greg-ui-analyze` the result.
 3. `/greg-ui-enhance` the result (or the analysis output).
 4. (Optional) Analyze again → one more enhance pass.
-5. Curate the final into `data/examples/` or references/.
+5. Curate the final into `data/specimens/` and promote only canonical examples into `references/`.
 
 ## Usage Examples
 - `/greg-ui-enhance [paste mediocre landing page code] Make it Greg`

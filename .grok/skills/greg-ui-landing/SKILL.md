@@ -26,7 +26,7 @@ This variant is tuned specifically for the gallery-winning style: high-signal pr
 - Frosted sticky nav with primary CTA.
 
 ## Instructions
-1. Load references (meridian-greg.html + SENSIBILITIES.md) — same as direct.
+1. Load repo-root references (`references/meridian-greg.html`, `references/SENSIBILITIES.md`, `references/STYLE_PRIMITIVES.md`, `references/PAGE_ARCHETYPES.md`, `references/ANTI_EXAMPLES.md`) — same as direct.
 2. Map the user's product description onto the Meridian template closely.
 3. Generate a **complete single-file landing page**.
 4. Include at minimum:

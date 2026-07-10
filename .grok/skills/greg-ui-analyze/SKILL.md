@@ -14,8 +14,11 @@ author: fakegreg
 Compare any UI artifact against the observed strengths of Greg 2 (crofbench 1.0 leader).
 
 ## How to Use
-1. Load references first:
+1. Load repo-root references first:
    - `references/SENSIBILITIES.md`
+   - `references/STYLE_PRIMITIVES.md`
+   - `references/PAGE_ARCHETYPES.md`
+   - `references/ANTI_EXAMPLES.md`
    - `references/meridian-greg.html` (the target standard)
    - Any provided screenshot or candidate code.
 
