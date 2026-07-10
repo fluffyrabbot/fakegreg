@@ -47,10 +47,23 @@ curl https://crof.ai/v1/chat/completions \
 ```
 
 ## Built Tooling
-- `make accept` / `python3 scripts/fakegreg_acceptance.py` — schema, path safety, structure, score floors.
-- `make report` / `python3 scripts/fakegreg_eval.py report` — baseline pointer + timestamped history under `data/evals/runs/`.
-- `python3 scripts/fakegreg_eval.py compare --base ... --head ...` — score/pass regressions between runs.
+- `make accept` — schema, path safety, structure, score floors.
+- `make calibrate` — score bands + pairwise preference consistency.
+- `make report` — baseline pointer + timestamped history under `data/evals/runs/`.
+- `make screenshot` — Chrome headless screenshots for HTML specimens.
+- `python3 scripts/fakegreg_collect.py api` — real Greg API → specimen bundles (`provenance: real_api`).
+- `python3 scripts/fakegreg_collect.py gallery` — live greg.crof.ai page → specimen (`gallery_extract`).
+- `python3 scripts/fakegreg_eval.py compare --base ... --head ...` — score/pass regressions.
 - `python3 scripts/fakegreg_eval.py run` — OpenAI-compatible API execution of the core prompt set.
-- `make test` — unit tests for validators and compare logic.
+- `make test` / `make ci` — unit tests + full local CI mirror.
+
+## Collect examples
+
+```bash
+export CROF_API_KEY=...
+python3 scripts/fakegreg_collect.py api --prompt-set data/prompt_sets/collect.json --model greg-2-super
+python3 scripts/fakegreg_collect.py gallery --url https://greg.crof.ai/greg-2-super --id nexus-super-gold --kind reference
+make accept && make calibrate && make report
+```
 
 Start with the canonical bundle shape, then automate more collection over time.

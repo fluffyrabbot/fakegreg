@@ -31,8 +31,13 @@ The Meridian example remains the repo’s quality ceiling, but the corpus now wi
 | `data/prompt_sets/core.json` | Fixed baseline prompt set for eval/reporting |
 | `scripts/fakegreg_acceptance.py` | Schema-backed acceptance checks over the corpus |
 | `scripts/fakegreg_eval.py` | Baseline reports, run history, compare, and API evals |
+| `scripts/fakegreg_collect.py` | Collect specimens from Greg API or live gallery pages |
+| `scripts/fakegreg_screenshot.py` | Chrome headless screenshots for HTML specimens |
+| `scripts/fakegreg_calibrate.py` | Score-band + pairwise preference calibration |
 | `data/evals/` | Committed baseline + timestamped eval history |
-| `Makefile` | `accept` / `report` / `compare` / `test` / `ci` shortcuts |
+| `data/calibration/` | Expected score bands for labeled specimens |
+| `data/pairwise/` | Forced-choice Greg-fidelity preference pairs |
+| `Makefile` | `accept` / `report` / `calibrate` / `screenshot` / `ci` shortcuts |
 | `data/generated/` | Scratch/ad hoc generated artifacts |
 
 ## Shared references
@@ -87,16 +92,19 @@ Included surfaces now span:
 Quick path:
 
 ```bash
-make accept   # schema + path + structure + score floors
-make test     # unit tests for helpers
-make report   # data/evals/baseline.json + data/evals/runs/<id>/report.json
-make ci       # local mirror of GitHub Actions
+make accept      # schema + path + structure + score floors
+make calibrate   # score bands + pairwise preferences
+make test        # unit tests for helpers
+make report      # data/evals/baseline.json + data/evals/runs/<id>/report.json
+make screenshot  # Chrome headless screenshots for HTML specimens
+make ci          # local mirror of GitHub Actions
 ```
 
 Or directly:
 
 ```bash
 python3 scripts/fakegreg_acceptance.py
+python3 scripts/fakegreg_calibrate.py
 python3 scripts/fakegreg_eval.py report
 python3 scripts/fakegreg_eval.py compare \
   --base data/evals/baseline.json \
@@ -104,32 +112,49 @@ python3 scripts/fakegreg_eval.py compare \
   --fail-on-regression
 ```
 
-Run the prompt set through an OpenAI-compatible API using the skill prompts:
+### Collect real Greg outputs
+
+```bash
+# Live API → specimen bundles (provenance: real_api)
+export CROF_API_KEY=...
+python3 scripts/fakegreg_collect.py api --model greg-2-super
+# or: make collect-dry   # plan only, no network
+
+# Live gallery page → specimen bundle (provenance: gallery_extract)
+python3 scripts/fakegreg_collect.py gallery \
+  --url https://greg.crof.ai/greg-2-super \
+  --id nexus-super-gold \
+  --model greg-2-super \
+  --kind reference
+```
+
+Eval harness (skill prompts through API):
 
 ```bash
 export CROF_API_KEY=...
 python3 scripts/fakegreg_eval.py run --model greg-2-super
 ```
 
-By default the run command targets `https://crof.ai/v1/chat/completions`, but it also supports `FAKEGREG_API_KEY`, `FAKEGREG_BASE_URL`, and `FAKEGREG_MODEL`.
+Defaults: `https://crof.ai/v1/chat/completions`. Also supports `FAKEGREG_API_KEY`, `FAKEGREG_BASE_URL`, and `FAKEGREG_MODEL`.
 
-CI (`.github/workflows/ci.yml`) runs unit tests, acceptance, and a baseline compare on every push/PR.
+CI runs unit tests, acceptance, calibration, and baseline compare on every push/PR.
 
 ## Workflow
 
-1. Generate with `/greg-direct-repro` or `/greg-ui-landing`
-2. Analyze with `/greg-ui-analyze`
+1. Generate with `/greg-direct-repro` or `/greg-ui-landing` (or `collect api` for real Greg)
+2. Analyze with `/greg-ui-analyze` (absolute scores or pairwise mode)
 3. Refine with `/greg-ui-enhance`
-4. Save strong outputs as specimen bundles with honest `provenance` + `score_meta`
-5. Run `make accept` and `make report` to prevent taste drift
-6. Use `compare --fail-on-regression` when changing skills or rubric thresholds
+4. Save specimen bundles with honest `provenance` + `score_meta`
+5. `make screenshot` if HTML changed
+6. `make accept && make calibrate && make report` to prevent taste drift
+7. `compare --fail-on-regression` when changing skills or rubric thresholds
 
 ## Contribution direction
 
 High-value next work:
-- add more **real Greg API** generations (`provenance: real_api`) into `data/specimens/`
+- set `CROF_API_KEY` and run `python3 scripts/fakegreg_collect.py api` for `real_api` specimens
 - keep `references/STYLE_PRIMITIVES.md` and `references/ANTI_EXAMPLES.md` sharp
 - broaden non-landing surfaces further
-- use eval history + compare when revising skill prompts
+- expand pairwise pairs as the corpus grows
 
 **GitHub**: https://github.com/fluffyrabbot/fakegreg
