@@ -1,0 +1,55 @@
+{
+  "id": "opus-gallery-anti",
+  "title": "Nexus AI (opus-4.8 gallery peer)",
+  "kind": "anti_example",
+  "surface": "landing_page",
+  "prompt_path": "prompt.md",
+  "generator": {
+    "source": "https://greg.crof.ai/opus-4.8",
+    "model": "opus-4.8",
+    "skill": null,
+    "generated_at": "2026-07-09",
+    "provenance": "gallery_extract",
+    "notes": "Live HTML capture from https://greg.crof.ai/opus-4.8. Competent peer on the shared gallery prompt; used as a non-Greg ranking control."
+  },
+  "artifacts": {
+    "raw_output_path": "output.html",
+    "rendered_output_path": "output.html",
+    "screenshot_path": "screenshot.png",
+    "analysis_path": "analysis.md",
+    "notes_path": "notes.md"
+  },
+  "scores": {
+    "overall": 58,
+    "design_quality": 62,
+    "visual_polish": 60,
+    "narrative_copy": 55,
+    "implementation": 68,
+    "greg_fidelity": 42
+  },
+  "score_meta": {
+    "scorer": "human",
+    "scored_at": "2026-07-09",
+    "method": "human band for opus-4.8 gallery peer as non-Greg control"
+  },
+  "acceptance": {
+    "minimum_score": 0,
+    "maximum_score": 70,
+    "required_sections": [
+      "hero",
+      "cta"
+    ],
+    "required_visuals": [
+      "canvas_or_svg"
+    ],
+    "minimum_kickers": 0,
+    "analysis_shape": "greg_ui_analysis_v1"
+  },
+  "tags": [
+    "anti_example",
+    "gallery",
+    "opus-4.8",
+    "landing",
+    "control"
+  ]
+}

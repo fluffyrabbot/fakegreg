@@ -7,6 +7,10 @@
       "expect_pass": true
     },
     {
+      "id": "nexus-super-gold",
+      "expect_pass": true
+    },
+    {
       "id": "forgenet-direct",
       "expect_pass": true
     },
@@ -28,6 +32,10 @@
     },
     {
       "id": "generic-cloud-anti",
+      "expect_pass": true
+    },
+    {
+      "id": "opus-gallery-anti",
       "expect_pass": true
     }
   ]

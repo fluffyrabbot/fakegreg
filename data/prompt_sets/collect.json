@@ -1,0 +1,24 @@
+{
+  "id": "collect",
+  "description": "Live API collection set for real Greg generations (requires CROF_API_KEY / FAKEGREG_API_KEY).",
+  "entries": [
+    {
+      "id": "signalgrid-landing",
+      "title": "SignalGrid landing (real API)",
+      "skill": "greg-direct-repro",
+      "surface": "landing_page",
+      "kind": "candidate",
+      "tags": ["real_api", "landing", "collect"],
+      "prompt": "Create a beautiful, complete, self-contained modern landing page for SignalGrid, a real-time telemetry mesh for AI agent fleets. Include an interactive network visual, // kickers, geometric unicode icons, a styled code quickstart, and big credible metrics. Prefer single-file HTML+CSS+JS."
+    },
+    {
+      "id": "harbor-ops-dashboard",
+      "title": "Harbor ops dashboard (real API)",
+      "skill": "greg-direct-repro",
+      "surface": "dashboard",
+      "kind": "candidate",
+      "tags": ["real_api", "dashboard", "collect"],
+      "prompt": "Create an ops dashboard for Harbor, a global deployment control plane for edge model rollouts. Keep Greg proof density and // kickers, but translate into an operator control surface with status, topology, and incident signals. Single-file HTML."
+    }
+  ]
+}

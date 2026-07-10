@@ -10,6 +10,13 @@
       "prompt": "Create a beautiful, complete, self-contained modern landing page for a global edge AI product with an interactive network visual, // kickers, geometric unicode icons, a styled code quickstart, and big credible metrics."
     },
     {
+      "id": "nexus-super-reference",
+      "specimen_id": "nexus-super-gold",
+      "skill": "greg-direct-repro",
+      "surface": "landing_page",
+      "prompt": "Create a beautiful, complete, self-contained modern landing page for a global edge AI product with an interactive network visual, // kickers, geometric unicode icons, a styled code quickstart, and big credible metrics."
+    },
+    {
       "id": "forgenet-direct",
       "specimen_id": "forgenet-direct",
       "skill": "greg-direct-repro",
@@ -50,6 +57,13 @@
       "skill": null,
       "surface": "landing_page",
       "prompt": "Control specimen: intentionally generic cloud landing page to act as a negative example for Greg fidelity."
+    },
+    {
+      "id": "opus-gallery-anti",
+      "specimen_id": "opus-gallery-anti",
+      "skill": null,
+      "surface": "landing_page",
+      "prompt": "Control specimen: opus-4.8 gallery peer on the shared crof gallery prompt for non-Greg ranking."
     }
   ]
 }

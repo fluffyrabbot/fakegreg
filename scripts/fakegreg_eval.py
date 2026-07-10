@@ -4,15 +4,13 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import re
 import sys
-import urllib.error
-import urllib.request
 from datetime import datetime, UTC
 from pathlib import Path
 from typing import Any
 
+from fakegreg_api import post_chat_completion, resolve_base_url, resolve_model
 from fakegreg_lib import (
     ROOT,
     compare_eval_results,
@@ -65,11 +63,11 @@ def parse_args() -> argparse.Namespace:
     )
     run.add_argument(
         "--model",
-        default=os.environ.get("FAKEGREG_MODEL", os.environ.get("CROF_MODEL", "greg-2-super")),
+        default=resolve_model(),
     )
     run.add_argument(
         "--base-url",
-        default=os.environ.get("FAKEGREG_BASE_URL", os.environ.get("CROF_BASE_URL", "https://crof.ai/v1")),
+        default=resolve_base_url(),
     )
 
     compare = subparsers.add_parser("compare", help="Compare two eval result JSON files.")
@@ -130,35 +128,15 @@ def build_skill_prompt(skill_name: str) -> str:
     )
 
 
-def post_chat_completion(base_url: str, model: str, system_prompt: str, user_prompt: str) -> str:
-    api_key = os.environ.get("FAKEGREG_API_KEY") or os.environ.get("CROF_API_KEY")
-    if not api_key:
-        raise RuntimeError("Set FAKEGREG_API_KEY or CROF_API_KEY before using the run command.")
-
-    payload = {
-        "model": model,
-        "messages": [
+def chat(base_url: str, model: str, system_prompt: str, user_prompt: str) -> str:
+    return post_chat_completion(
+        messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt},
         ],
-    }
-    request = urllib.request.Request(
-        f"{base_url.rstrip('/')}/chat/completions",
-        data=json.dumps(payload).encode("utf-8"),
-        headers={
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json",
-        },
-        method="POST",
+        model=model,
+        base_url=base_url,
     )
-    try:
-        with urllib.request.urlopen(request) as response:
-            body = json.loads(response.read().decode("utf-8"))
-    except urllib.error.HTTPError as error:
-        detail = error.read().decode("utf-8", errors="replace")
-        raise RuntimeError(f"API request failed: {error.code} {detail}") from error
-
-    return body["choices"][0]["message"]["content"]
 
 
 def parse_overall_score(analysis_text: str) -> int | None:
@@ -274,9 +252,9 @@ def command_run(prompt_set_path: Path, out_dir: Path, model: str, base_url: str)
             parsed_score = 0
         else:
             system_prompt = build_skill_prompt(entry["skill"])
-            content = post_chat_completion(base_url, model, system_prompt, entry["prompt"])
+            content = chat(base_url, model, system_prompt, entry["prompt"])
             output_path.write_text(content, encoding="utf-8")
-            analysis_content = post_chat_completion(
+            analysis_content = chat(
                 base_url,
                 model,
                 analyzer_prompt,

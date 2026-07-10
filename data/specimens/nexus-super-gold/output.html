@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXUS — AI Connecting the World</title>
+<style>
+:root {
+  --bg: #06060a;
+  --bg-2: #0b0b12;
+  --surface: #111118;
+  --surface-2: #18181f;
+  --line: #1e1e28;
+  --line-soft: #14141c;
+  --ink: #e8e4dc;
+  --muted: #8a8680;
+  --muted-2: #5a5854;
+  --accent: #c8944a;
+  --accent-2: #e8b862;
+  --accent-soft: rgba(200,148,74,0.08);
+  --accent-glow: rgba(200,148,74,0.22);
+  --accent-line: rgba(200,148,74,0.30);
+  --teal: #4ecdc4;
+  --teal-glow: rgba(78,205,196,0.3);
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --mono: Menlo, Consolas, 'Courier New', monospace;
+  --ease: cubic-bezier(0.22,1,0.36,1);
+  --rad: 14px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.65;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,48px)}
+
+/* Grain overlay */
+body::after{content:'';position:fixed;inset:0;z-index:10000;pointer-events:none;opacity:0.032;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:200px 200px}
+
+/* Nav */
+nav{position:sticky;top:0;z-index:200;backdrop-filter:blur(14px);background:rgba(6,6,10,0.72);border-bottom:1px solid var(--line-soft)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:60px}
+.brand{font-weight:700;font-size:18px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-2)}
+.brand span{color:var(--muted-2);font-weight:400;font-size:12px;letter-spacing:.04em;margin-left:10px;font-family:var(--mono)}
+.nav-links{display:flex;align-items:center;gap:28px;font-size:14px;color:var(--muted)}
+.nav-links a{transition:color .25s var(--ease)}
+.nav-links a:hover{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:500;padding:10px 20px;border-radius:10px;border:1px solid transparent;cursor:pointer;transition:all .25s var(--ease);white-space:nowrap}
+.btn-primary{background:var(--accent);color:#1a0e08;font-weight:600;box-shadow:0 6px 24px var(--accent-glow)}
+.btn-primary:hover{background:var(--accent-2);transform:translateY(-2px);box-shadow:0 10px 34px var(--accent-glow)}
+.btn-ghost{background:var(--surface);color:var(--ink);border-color:var(--line)}
+.btn-ghost:hover{border-color:#3a3a40;background:var(--surface-2)}
+@media(max-width:700px){.nav-links .hide-sm{display:none}}
+
+/* Hero */
+#hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:clamp(60px,10vh,100px) 0 clamp(40px,6vh,60px);overflow:hidden}
+#hero::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-55%);width:900px;height:700px;pointer-events:none;background:radial-gradient(ellipse at center,var(--accent-glow),transparent 60%);opacity:.5}
+.kicker{font-family:var(--mono);font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+h1.hero-title{font-size:clamp(42px,8vw,96px);font-weight:200;letter-spacing:-.04em;line-height:.95;margin-bottom:0}
+h1.hero-title .accent{color:var(--accent-2);font-weight:300}
+.hero-sub{font-size:clamp(16px,2vw,20px);color:var(--muted);max-width:520px;margin:0 auto 28px;line-height:1.55;font-weight:300}
+.hero-sub b{color:var(--ink);font-weight:500}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+
+/* Globe */
+#globe-wrap{position:relative;width:min(640px,82vw);height:min(640px,52vh);margin:clamp(24px,4vh,48px) auto 0;animation:globe-in 1.6s var(--ease) .2s both}
+@keyframes globe-in{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:scale(1)}}
+#globe-canvas{cursor:grab;display:block;width:100%;height:100%}
+#globe-canvas:active{cursor:grabbing}
+.drag-hint{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted-2);margin-top:14px;text-align:center;transition:opacity .6s var(--ease)}
+.drag-hint.hidden{opacity:0}
+.city-tooltip{position:absolute;pointer-events:none;background:var(--surface-2);border:1px solid var(--line);padding:5px 12px;border-radius:8px;font-size:12.5px;font-family:var(--mono);color:var(--teal);opacity:0;transition:opacity .2s;z-index:100;white-space:nowrap;letter-spacing:.03em}
+.city-tooltip.visible{opacity:1}
+
+/* Sections */
+.section{padding:clamp(56px,10vh,104px) 0}
+.divider{border-top:1px solid var(--line)}
+.sec-kicker{font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;color:var(--accent);text-transform:uppercase;margin-bottom:14px}
+.sec-head{margin-bottom:44px}
+.sec-head h2{font-size:clamp(28px,4.4vw,44px);font-weight:600;letter-spacing:-.03em;line-height:1.1;margin-bottom:14px}
+.sec-head p{color:var(--muted);font-size:clamp(15px,1.8vw,18px);max-width:600px;line-height:1.55}
+
+/* Feature cards */
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.feat{border:1px solid var(--line);border-radius:var(--rad);background:var(--surface);padding:28px;transition:border-color .4s var(--ease),transform .4s var(--ease)}
+.feat:hover{border-color:#34343a;transform:translateY(-3px)}
+.feat .ico{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;background:var(--accent-soft);border:1px solid var(--accent-line);color:var(--accent);margin-bottom:18px}
+.feat .ico svg{width:20px;height:20px}
+.feat h3{font-size:17px;font-weight:600;margin-bottom:8px;letter-spacing:-.01em}
+.feat p{font-size:14.5px;color:var(--muted);line-height:1.55}
+
+/* Metrics */
+.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+@media(max-width:700px){.metrics-grid{grid-template-columns:repeat(2,1fr)}}
+.metric{text-align:center;padding:28px 16px;border:1px solid var(--line);border-radius:var(--rad);background:var(--surface)}
+.metric .num{font-size:clamp(32px,5vw,48px);font-weight:700;letter-spacing:-.04em;color:var(--accent-2);line-height:1;margin-bottom:8px;font-variant-numeric:tabular-nums}
+.metric .unit{font-size:clamp(12px,1.5vw,14px);color:var(--muted-2);font-family:var(--mono);letter-spacing:.04em}
+.metric .label{font-size:14px;color:var(--muted);margin-top:10px}
+
+/* CTA */
+.cta-card{position:relative;overflow:hidden;text-align:center;padding:clamp(56px,10vh,96px) 24px}
+.cta-card::before{content:'';position:absolute;bottom:-200px;left:50%;transform:translateX(-50%);width:700px;height:400px;background:radial-gradient(ellipse at center,var(--accent-glow),transparent 65%);opacity:.4;pointer-events:none}
+.cta-card h2{position:relative;font-size:clamp(28px,5vw,48px);font-weight:600;letter-spacing:-.03em;margin-bottom:14px}
+.cta-card p{position:relative;color:var(--muted);max-width:460px;margin:0 auto 28px;font-size:16px}
+
+/* Footer */
+footer{border-top:1px solid var(--line);padding:36px 0}
+.foot-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.foot-brand{font-weight:700;font-size:15px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.foot-copy{font-size:12px;color:var(--muted-2)}
+.foot-links{display:flex;gap:20px;font-size:13px;color:var(--muted)}
+.foot-links a:hover{color:var(--ink)}
+
+/* Reveal */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .85s var(--ease),transform .85s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}*{animation:none!important;transition-duration:.01ms!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap nav-inner">
+  <div class="brand">NEXUS<span>AI</span></div>
+  <div class="nav-links">
+    <a href="#capabilities" class="hide-sm">Capabilities</a>
+    <a href="#network">Network</a>
+    <a href="#start" class="btn btn-primary" style="padding:8px 16px;">Get API Key</a>
+  </div>
+</div></nav>
+
+<header id="hero">
+  <div class="wrap" style="text-align:center;position:relative;z-index:2">
+    <div class="kicker">State of the art artificial intelligence</div>
+    <h1 class="hero-title">CONNECTING<br>THE <span class="accent">WORLD</span></h1>
+
+    <div id="globe-wrap">
+      <canvas id="globe-canvas" width="563" height="325" style="width: 563.2px; height: 325.353px;"></canvas>
+      <div class="city-tooltip" id="city-tooltip"><span id="city-name"></span></div>
+    </div>
+    <div class="drag-hint" id="drag-hint">Drag to explore</div>
+
+    <p class="hero-sub">One intelligence. Infinite connections. <b>Spanning every continent, every market, every edge</b> — NEXUS unifies global infrastructure with frontier AI.</p>
+    <div class="hero-cta">
+      <a href="#start" class="btn btn-primary">Get Started →</a>
+      <a href="#capabilities" class="btn btn-ghost">Explore Capabilities</a>
+    </div>
+  </div>
+</header>
+
+<section class="section divider" id="capabilities">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-kicker">// capabilities</div>
+      <h2>Built for the whole planet</h2>
+      <p>Three pillars, one system. NEXUS processes, routes, and learns — at the scale the world demands.</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="2.5"></circle><circle cx="17" cy="7" r="2.5"></circle><circle cx="12" cy="17" r="2.5"></circle><line x1="9" y1="8.5" x2="10.5" y2="15"></line><line x1="15" y1="8.5" x2="13.5" y2="15"></line><line x1="9.5" y1="7" x2="14.5" y2="7"></line></svg></div>
+        <h3>Neural Processing</h3>
+        <p>Distributed inference across 180+ regions. Sub-12ms latency from São Paulo to Seoul — no cold starts, no bottlenecks.</p>
+      </div>
+      <div class="feat reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"></circle><ellipse cx="12" cy="12" rx="4" ry="9"></ellipse><line x1="3" y1="12" x2="21" y2="12"></line></svg></div>
+        <h3>Global Mesh</h3>
+        <p>Self-optimizing network topology. Traffic reroutes in milliseconds. Zero single points of failure. Built to never go dark.</p>
+      </div>
+      <div class="feat reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v18M3 12c0-4.97 4.03-9 9-9"></path><path d="M21 12c0 4.97-4.03 9-9 9"></path><circle cx="12" cy="12" r="2"></circle></svg></div>
+        <h3>Adaptive Models</h3>
+        <p>Models that learn from the network itself. Every request makes every subsequent request smarter. Intelligence that compounds.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section divider" id="network">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-kicker">// by the numbers</div>
+      <h2>The network, quantified</h2>
+      <p>Not promises — measurements. Every metric tracked continuously, every number auditable.</p>
+    </div>
+    <div class="metrics-grid">
+      <div class="metric reveal"><div class="num" data-target="2400" data-suffix="M+">0</div><div class="unit">daily</div><div class="label">Connections processed</div></div>
+      <div class="metric reveal"><div class="num" data-target="180" data-suffix="+">0</div><div class="unit">countries</div><div class="label">Global coverage</div></div>
+      <div class="metric reveal"><div class="num" data-target="99.97" data-suffix="%" data-decimals="2">0</div><div class="unit">uptime</div><div class="label">Rolling 12 months</div></div>
+      <div class="metric reveal"><div class="num" data-target="12" data-prefix="&lt;" data-suffix="ms">0</div><div class="unit">p99</div><div class="label">Inference latency</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="divider" id="start">
+  <div class="wrap">
+    <div class="cta-card">
+      <h2>The network is live. Join it.</h2>
+      <p>Get an API key and start building in under five minutes. No contracts, no minimums.</p>
+      <div class="hero-cta" style="justify-content:center">
+        <a href="#" class="btn btn-primary">Get API Key →</a>
+        <a href="#" class="btn btn-ghost">Read the Docs</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-inner">
+    <div class="foot-brand">NEXUS</div>
+    <div class="foot-copy">© 2025 NEXUS AI Inc. All rights reserved.</div>
+    <div class="foot-links">
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Status</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ═══════════════════════════════════════
+   NEXUS Globe — Pure Canvas 3D
+   ═══════════════════════════════════════ */
+
+const canvas = document.getElementById('globe-canvas');
+const ctx = canvas.getContext('2d');
+const tooltip = document.getElementById('city-tooltip');
+const cityNameEl = document.getElementById('city-name');
+const dragHint = document.getElementById('drag-hint');
+
+/* ── State ── */
+let dw, dh, globeR, camDist;
+let rotX = 0.35, rotY = -0.6;
+let velX = 0, velY = 0.0015;
+let dragging = false, lastMX = 0, lastMY = 0;
+let mouseX = -9999, mouseY = -9999;
+let hoverCity = -1;
+let hasDragged = false;
+const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ── Cities ── */
+const cities = [
+  { name: 'New York',     lat: 40.7,  lng: -74.0 },
+  { name: 'London',       lat: 51.5,  lng: -0.1 },
+  { name: 'Tokyo',        lat: 35.7,  lng: 139.7 },
+  { name: 'Sydney',       lat: -33.9, lng: 151.2 },
+  { name: 'São Paulo',    lat: -23.5, lng: -46.6 },
+  { name: 'Dubai',        lat: 25.2,  lng: 55.3 },
+  { name: 'Singapore',    lat: 1.3,   lng: 103.8 },
+  { name: 'San Francisco',lat: 37.8,  lng: -122.4 },
+  { name: 'Mumbai',       lat: 19.1,  lng: 72.9 },
+  { name: 'Nairobi',      lat: -1.3,  lng: 36.8 },
+  { name: 'Berlin',       lat: 52.5,  lng: 13.4 },
+  { name: 'Seoul',        lat: 37.6,  lng: 127.0 },
+];
+
+const connections = [
+  [0,1],[1,5],[5,8],[8,6],[6,2],[2,3],[0,7],[1,10],[4,9],[5,6],[2,11],[7,11],[10,8]
+];
+
+/* ── Land detection (simplified) ── */
+function isLand(lat, lng) {
+  if (lng > 180) lng -= 360; if (lng < -180) lng += 360;
+  // North America
+  if (lat>58&&lat<72&&lng>-170&&lng<-140) return true;
+  if (lat>50&&lat<72&&lng>-140&&lng<-55) return true;
+  if (lat>30&&lat<50&&lng>-124&&lng<-100) return true;
+  if (lat>25&&lat<50&&lng>-100&&lng<-67) return true;
+  if (lat>15&&lat<30&&lng>-118&&lng<-88) return true;
+  if (lat>7&&lat<18&&lng>-92&&lng<-77) return true;
+  // Greenland
+  if (lat>60&&lat<83&&lng>-56&&lng<-20) return true;
+  // South America
+  if (lat>-5&&lat<12&&lng>-80&&lng<-50) return true;
+  if (lat>-20&&lat<-5&&lng>-75&&lng<-35) return true;
+  if (lat>-35&&lat<-20&&lng>-70&&lng<-40) return true;
+  if (lat>-55&&lat<-35&&lng>-75&&lng<-63) return true;
+  if (lat>-20&&lat<0&&lng>-82&&lng<-68) return true;
+  if (lat>0&&lat<12&&lng>-78&&lng<-60) return true;
+  // Europe
+  if (lat>36&&lat<44&&lng>-10&&lng<4) return true;
+  if (lat>43&&lat<51&&lng>-5&&lng<8) return true;
+  if (lat>50&&lat<59&&lng>-11&&lng<2) return true;
+  if (lat>45&&lat<55&&lng>5&&lng<25) return true;
+  if (lat>36&&lat<46&&lng>7&&lng<30) return true;
+  if (lat>55&&lat<71&&lng>5&&lng<32) return true;
+  if (lat>45&&lat<60&&lng>20&&lng<42) return true;
+  // Africa
+  if (lat>18&&lat<37&&lng>-17&&lng<35) return true;
+  if (lat>4&&lat<20&&lng>-18&&lng<16) return true;
+  if (lat>-5&&lat<10&&lng>8&&lng<32) return true;
+  if (lat>-2&&lat<15&&lng>30&&lng<52) return true;
+  if (lat>-35&&lat<-5&&lng>12&&lng<42) return true;
+  if (lat>-26&&lat<-12&&lng>43&&lng<50) return true;
+  // Middle East
+  if (lat>12&&lat<38&&lng>35&&lng<60) return true;
+  // Asia / Russia
+  if (lat>50&&lat<72&&lng>30&&lng<180) return true;
+  if (lat>35&&lat<55&&lng>50&&lng<90) return true;
+  if (lat>20&&lat<50&&lng>75&&lng<135) return true;
+  if (lat>8&&lat<35&&lng>68&&lng<92) return true;
+  if (lat>5&&lat<28&&lng>92&&lng<112) return true;
+  if (lat>30&&lat<45&&lng>128&&lng<146) return true;
+  if (lat>33&&lat<43&&lng>124&&lng<130) return true;
+  // Indonesia
+  if (lat>-10&&lat<6&&lng>95&&lng<141) return true;
+  // Australia / NZ
+  if (lat>-40&&lat<-11&&lng>113&&lng<154) return true;
+  if (lat>-47&&lat<-34&&lng>165&&lng<179) return true;
+  // Iceland
+  if (lat>63&&lat<67&&lng>-25&&lng<-13) return true;
+  return false;
+}
+
+/* ── Generate dots on unit sphere ── */
+const NUM_DOTS = 3200;
+const unitDots = [];
+const golden = Math.PI * (3 - Math.sqrt(5));
+for (let i = 0; i < NUM_DOTS; i++) {
+  const y = 1 - (i / (NUM_DOTS - 1)) * 2;
+  const rr = Math.sqrt(1 - y * y);
+  const th = golden * i;
+  const lat = Math.asin(y) * 180 / Math.PI;
+  const lng = Math.atan2(Math.sin(th) * rr, Math.cos(th) * rr) * 180 / Math.PI;
+  unitDots.push({ x: Math.cos(th) * rr, y, z: Math.sin(th) * rr, land: isLand(lat, lng) });
+}
+
+/* ── City positions on unit sphere ── */
+function llToUnit(lat, lng) {
+  const phi = (90 - lat) * Math.PI / 180;
+  const theta = lng * Math.PI / 180;
+  return { x: Math.sin(phi) * Math.cos(theta), y: Math.cos(phi), z: Math.sin(phi) * Math.sin(theta) };
+}
+const unitCities = cities.map(c => llToUnit(c.lat, c.lng));
+
+/* ── Pre-compute arc paths on unit sphere ── */
+const ARC_SEGS = 64;
+const ELEV = 0.18;
+const unitArcs = connections.map(([a, b]) => {
+  const p1 = unitCities[a], p2 = unitCities[b];
+  const dot = p1.x*p2.x + p1.y*p2.y + p1.z*p2.z;
+  const omega = Math.acos(Math.max(-1, Math.min(1, dot)));
+  const sinO = Math.sin(omega);
+  const pts = [];
+  for (let i = 0; i <= ARC_SEGS; i++) {
+    const t = i / ARC_SEGS;
+    let px, py, pz;
+    if (sinO < 0.001) { px = p1.x; py = p1.y; pz = p1.z; }
+    else {
+      const sa = Math.sin((1 - t) * omega) / sinO;
+      const sb = Math.sin(t * omega) / sinO;
+      px = sa*p1.x + sb*p2.x; py = sa*p1.y + sb*p2.y; pz = sa*p1.z + sb*p2.z;
+    }
+    const elev = Math.sin(t * Math.PI) * ELEV;
+    const r = 1 + elev;
+    const len = Math.sqrt(px*px + py*py + pz*pz);
+    const s = r / Math.max(len, 0.0001);
+    pts.push({ x: px*s, y: py*s, z: pz*s });
+  }
+  return pts;
+});
+
+/* ── Arc flow particles ── */
+const arcParticles = connections.map(() => {
+  const n = 2 + Math.floor(Math.random() * 2);
+  return Array.from({ length: n }, () => ({ t: Math.random(), speed: 0.0012 + Math.random() * 0.002 }));
+});
+
+/* ── Orbits ── */
+const orbits = [
+  { tiltX: 0.4, tiltZ: 0.2, r: 1.28 },
+  { tiltX: -0.35, tiltZ: 0.55, r: 1.48 },
+  { tiltX: 0.75, tiltZ: -0.15, r: 1.18 },
+];
+
+/* ── Math ── */
+function rot3(px, py, pz, rx, ry) {
+  const cy = Math.cos(ry), sy = Math.sin(ry);
+  const x1 = px*cy + pz*sy, z1 = -px*sy + pz*cy, y1 = py;
+  const cx = Math.cos(rx), sx = Math.sin(rx);
+  return { x: x1, y: y1*cx - z1*sx, z: y1*sx + z1*cx };
+}
+function proj(x, y, z, cx, cy) {
+  const s = camDist / (camDist - z);
+  return { x: cx + x * s, y: cy - y * s, s, z };
+}
+
+/* ── Canvas setup ── */
+function resize() {
+  const wrap = document.getElementById('globe-wrap');
+  const rect = wrap.getBoundingClientRect();
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  canvas.style.width = rect.width + 'px';
+  canvas.style.height = rect.height + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  dw = rect.width; dh = rect.height;
+  globeR = Math.min(dw, dh) * 0.37;
+  camDist = globeR * 4.5;
+}
+resize();
+window.addEventListener('resize', resize);
+
+/* ── Rendering ── */
+let projCities = [];
+
+function render(time) {
+  const cx = dw / 2, cy = dh / 2;
+  ctx.clearRect(0, 0, dw, dh);
+
+  // Atmosphere glow
+  const g1 = ctx.createRadialGradient(cx, cy, globeR * 0.6, cx, cy, globeR * 1.55);
+  g1.addColorStop(0, 'rgba(200,148,74,0.05)');
+  g1.addColorStop(0.5, 'rgba(200,148,74,0.015)');
+  g1.addColorStop(1, 'rgba(200,148,74,0)');
+  ctx.fillStyle = g1;
+  ctx.fillRect(0, 0, dw, dh);
+
+  // Outer halo ring
+  ctx.beginPath();
+  ctx.arc(cx, cy, globeR * 1.02, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(200,148,74,0.07)';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // Grid lines (latitude)
+  for (let lat = -75; lat <= 75; lat += 15) {
+    const phi = (90 - lat) * Math.PI / 180;
+    const ringY = Math.cos(phi), ringR = Math.sin(phi);
+    ctx.beginPath();
+    for (let lng = 0; lng <= 360; lng += 3) {
+      const th = lng * Math.PI / 180;
+      const ux = ringR * Math.cos(th), uz = ringR * Math.sin(th);
+      const r = rot3(ux, ringY, uz, rotX, rotY);
+      const p = proj(r.x * globeR, r.y * globeR, r.z * globeR, cx, cy);
+      if (lng === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y);
+    }
+    ctx.strokeStyle = 'rgba(200,148,74,0.035)';
+    ctx.lineWidth = 0.5;
+    ctx.stroke();
+  }
+  // Grid lines (longitude)
+  for (let lng = 0; lng < 360; lng += 20) {
+    const th = lng * Math.PI / 180;
+    ctx.beginPath();
+    for (let lat = -90; lat <= 90; lat += 3) {
+      const phi = (90 - lat) * Math.PI / 180;
+      const ux = Math.sin(phi)*Math.cos(th), uy = Math.cos(phi), uz = Math.sin(phi)*Math.sin(th);
+      const r = rot3(ux, uy, uz, rotX, rotY);
+      const p = proj(r.x*globeR, r.y*globeR, r.z*globeR, cx, cy);
+      if (lat === -90) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y);
+    }
+    ctx.strokeStyle = 'rgba(200,148,74,0.03)';
+    ctx.lineWidth = 0.5;
+    ctx.stroke();
+  }
+
+  // Dots
+  for (let i = 0; i < unitDots.length; i++) {
+    const d = unitDots[i];
+    const r = rot3(d.x, d.y, d.z, rotX, rotY);
+    const p = proj(r.x * globeR, r.y * globeR, r.z * globeR, cx, cy);
+    const front = r.z > 0;
+    let op, sz;
+    if (d.land) {
+      op = front ? 0.22 + 0.48 * (r.z / 1) : 0.02 + 0.04 * ((r.z + 1) / 2);
+      sz = front ? 1.2 + 0.9 * (r.z / 1) : 0.6;
+    } else {
+      op = front ? 0.018 + 0.03 * (r.z / 1) : 0.008;
+      sz = front ? 0.5 : 0.3;
+    }
+    if (op < 0.005) continue;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, Math.max(0.3, sz), 0, Math.PI * 2);
+    ctx.fillStyle = d.land
+      ? `rgba(232,184,98,${op.toFixed(3)})`
+      : `rgba(200,180,150,${op.toFixed(3)})`;
+    ctx.fill();
+  }
+
+  // Orbits
+  orbits.forEach(o => {
+    ctx.beginPath();
+    for (let i = 0; i <= 120; i++) {
+      const t = (i / 120) * Math.PI * 2;
+      let ox = o.r * Math.cos(t), oy = 0, oz = o.r * Math.sin(t);
+      const cTx = Math.cos(o.tiltX), sTx = Math.sin(o.tiltX);
+      let oy1 = oy * cTx - oz * sTx, oz1 = oy * sTx + oz * cTx;
+      const cTz = Math.cos(o.tiltZ), sTz = Math.sin(o.tiltZ);
+      let ox1 = ox * cTz - oy1 * sTz, oy2 = ox * sTz + oy1 * cTz;
+      const r = rot3(ox1 * globeR, oy2 * globeR, oz1 * globeR, rotX, rotY);
+      const p = proj(r.x, r.y, r.z, cx, cy);
+      if (i === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y);
+    }
+    ctx.strokeStyle = 'rgba(200,148,74,0.05)';
+    ctx.lineWidth = 0.5;
+    ctx.stroke();
+  });
+
+  // Arcs
+  unitArcs.forEach((pts) => {
+    for (let i = 0; i < pts.length - 1; i++) {
+      const a = pts[i], b = pts[i + 1];
+      const ra = rot3(a.x * globeR, a.y * globeR, a.z * globeR, rotX, rotY);
+      const rb = rot3(b.x * globeR, b.y * globeR, b.z * globeR, rotX, rotY);
+      if (ra.z < -globeR * 0.3 && rb.z < -globeR * 0.3) continue;
+      const pa = proj(ra.x, ra.y, ra.z, cx, cy);
+      const pb = proj(rb.x, rb.y, rb.z, cx, cy);
+      const avgZ = (ra.z + rb.z) / 2;
+      const op = avgZ > 0 ? 0.35 + 0.25 * (avgZ / globeR) : 0.06 + 0.08 * ((avgZ + globeR) / globeR);
+      ctx.beginPath();
+      ctx.moveTo(pa.x, pa.y);
+      ctx.lineTo(pb.x, pb.y);
+      ctx.strokeStyle = `rgba(200,148,74,${op.toFixed(3)})`;
+      ctx.lineWidth = avgZ > 0 ? 1.3 : 0.6;
+      ctx.stroke();
+    }
+  });
+
+  // Arc flow particles
+  arcParticles.forEach((particles, ci) => {
+    const arc = unitArcs[ci];
+    particles.forEach(p => {
+      if (!prefersReduced) p.t += p.speed;
+      if (p.t > 1) p.t -= 1;
+      const idx = Math.min(Math.floor(p.t * ARC_SEGS), ARC_SEGS - 1);
+      const frac = p.t * ARC_SEGS - idx;
+      const a = arc[idx], b = arc[Math.min(idx + 1, ARC_SEGS)];
+      const mx = a.x + (b.x - a.x) * frac;
+      const my = a.y + (b.y - a.y) * frac;
+      const mz = a.z + (b.z - a.z) * frac;
+      const r = rot3(mx * globeR, my * globeR, mz * globeR, rotX, rotY);
+      if (r.z < -globeR * 0.2) return;
+      const pp = proj(r.x, r.y, r.z, cx, cy);
+      const op = Math.max(0.1, 0.5 + 0.5 * (r.z / globeR));
+      ctx.beginPath();
+      ctx.arc(pp.x, pp.y, 1.8, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(232,184,98,${op.toFixed(2)})`;
+      ctx.fill();
+    });
+  });
+
+  // City nodes
+  projCities = [];
+  unitCities.forEach((c, i) => {
+    const r = rot3(c.x * globeR, c.y * globeR, c.z * globeR, rotX, rotY);
+    const p = proj(r.x, r.y, r.z, cx, cy);
+    projCities.push({ ...p, z3d: r.z });
+    if (r.z < -globeR * 0.35) return;
+    const pulse = Math.sin(time * 0.003 + i * 0.8) * 0.4 + 0.6;
+    const op = Math.max(0.15, (0.4 + 0.6 * (r.z / globeR)) * pulse);
+    const sz = 3 + 2 * (r.z / globeR);
+
+    // Glow
+    const glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, sz * 4);
+    glow.addColorStop(0, `rgba(78,205,196,${(op * 0.35).toFixed(3)})`);
+    glow.addColorStop(1, 'rgba(78,205,196,0)');
+    ctx.fillStyle = glow;
+    ctx.fillRect(p.x - sz * 4, p.y - sz * 4, sz * 8, sz * 8);
+
+    // Dot
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, Math.max(1.5, sz), 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(78,205,196,${op.toFixed(2)})`;
+    ctx.fill();
+
+    // Bright center
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, Math.max(0.8, sz * 0.4), 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(200,255,248,${(op * 0.8).toFixed(2)})`;
+    ctx.fill();
+  });
+
+  // Scan line
+  if (!prefersReduced) {
+    const scanT = (time * 0.00018) % 1;
+    const scanY = cy - globeR * 0.95 + scanT * globeR * 1.9;
+    const sg = ctx.createLinearGradient(0, scanY - 12, 0, scanY + 12);
+    sg.addColorStop(0, 'rgba(78,205,196,0)');
+    sg.addColorStop(0.5, 'rgba(78,205,196,0.025)');
+    sg.addColorStop(1, 'rgba(78,205,196,0)');
+    ctx.fillStyle = sg;
+    ctx.fillRect(cx - globeR * 0.92, scanY - 12, globeR * 1.84, 24);
+  }
+
+  // Specular highlight
+  const hx = cx - globeR * 0.3, hy = cy - globeR * 0.35;
+  const hg = ctx.createRadialGradient(hx, hy, 0, hx, hy, globeR * 0.5);
+  hg.addColorStop(0, 'rgba(255,255,255,0.018)');
+  hg.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = hg;
+  ctx.beginPath();
+  ctx.arc(cx, cy, globeR, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+/* ── Interaction ── */
+function onDown(x, y) {
+  dragging = true; lastMX = x; lastMY = y;
+  velX = 0; velY = 0;
+  if (!hasDragged) { hasDragged = true; dragHint.classList.add('hidden'); }
+}
+function onMove(x, y) {
+  if (!dragging) {
+    mouseX = x; mouseY = y;
+    return;
+  }
+  const dx = x - lastMX, dy = y - lastMY;
+  rotY += dx * 0.005;
+  rotX += dy * 0.005;
+  rotX = Math.max(-1.4, Math.min(1.4, rotX));
+  velX = dy * 0.004; velY = dx * 0.004;
+  lastMX = x; lastMY = y;
+}
+function onUp() { dragging = false; }
+
+canvas.addEventListener('mousedown', e => { e.preventDefault(); onDown(e.clientX, e.clientY); });
+window.addEventListener('mousemove', e => {
+  const rect = canvas.getBoundingClientRect();
+  onMove(e.clientX - rect.left, e.clientY - rect.top);
+});
+window.addEventListener('mouseup', onUp);
+
+canvas.addEventListener('touchstart', e => { e.preventDefault(); const t = e.touches[0]; onDown(t.clientX, t.clientY); }, { passive: false });
+canvas.addEventListener('touchmove', e => { e.preventDefault(); const t = e.touches[0]; const rect = canvas.getBoundingClientRect(); onMove(t.clientX - rect.left, t.clientY - rect.top); }, { passive: false });
+canvas.addEventListener('touchend', onUp);
+
+/* ── Tooltip ── */
+canvas.addEventListener('mousemove', function(e) {
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+  let nearest = -1, minD = 28;
+  projCities.forEach((p, i) => {
+    if (p.z3d < -globeR * 0.3) return;
+    const d = Math.sqrt((mx - p.x) ** 2 + (my - p.y) ** 2);
+    if (d < minD) { minD = d; nearest = i; }
+  });
+  if (nearest !== hoverCity) {
+    hoverCity = nearest;
+    if (nearest >= 0) {
+      const p = projCities[nearest];
+      tooltip.style.left = (p.x + 14) + 'px';
+      tooltip.style.top = (p.y - 32) + 'px';
+      cityNameEl.textContent = cities[nearest].name;
+      tooltip.classList.add('visible');
+    } else {
+      tooltip.classList.remove('visible');
+    }
+  }
+});
+canvas.addEventListener('mouseleave', () => { hoverCity = -1; tooltip.classList.remove('visible'); });
+
+/* ── Animation loop ── */
+function animate(time) {
+  if (!dragging) {
+    rotY += velY;
+    rotX += velX;
+    rotX = Math.max(-1.4, Math.min(1.4, rotX));
+    velX *= 0.94; velY *= 0.94;
+    if (!prefersReduced && Math.abs(velY) < 0.0008) rotY += 0.0012;
+  }
+  render(time);
+  requestAnimationFrame(animate);
+}
+requestAnimationFrame(animate);
+
+/* ═══════════════════════════════════════
+   Page Animations
+   ═══════════════════════════════════════ */
+
+// Scroll reveals
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// Counter animations
+const counters = document.querySelectorAll('.metric .num');
+const counterIO = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const el = e.target;
+    const target = parseFloat(el.dataset.target);
+    const decimals = parseInt(el.dataset.decimals || '0');
+    const prefix = el.dataset.prefix || '';
+    const suffix = el.dataset.suffix || '';
+    const duration = 1800;
+    const start = performance.now();
+    function update(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = target * eased;
+      el.textContent = prefix + (decimals > 0 ? current.toFixed(decimals) : Math.round(current).toLocaleString()) + suffix;
+      if (progress < 1) requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+    counterIO.unobserve(el);
+  });
+}, { threshold: 0.3 });
+counters.forEach(el => counterIO.observe(el));
+</script>
+<script defer="" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon="{&quot;version&quot;:&quot;2024.11.0&quot;,&quot;token&quot;:&quot;8f20679e2667468f8e7bfa2722132640&quot;,&quot;r&quot;:1,&quot;server_timing&quot;:{&quot;name&quot;:{&quot;cfCacheStatus&quot;:true,&quot;cfEdge&quot;:true,&quot;cfExtPri&quot;:true,&quot;cfL4&quot;:true,&quot;cfOrigin&quot;:true,&quot;cfSpeedBrain&quot;:true},&quot;location_startswith&quot;:null}}" crossorigin="anonymous"></script>
+
+</body></html>
