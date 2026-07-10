@@ -13,11 +13,19 @@ from datetime import datetime, UTC
 from pathlib import Path
 from typing import Any
 
-from fakegreg_lib import ROOT, discover_specimens, load_json, run_acceptance
+from fakegreg_lib import (
+    ROOT,
+    compare_eval_results,
+    discover_specimens,
+    load_json,
+    run_acceptance,
+    skill_prompt_hashes,
+    summarize_results,
+)
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Run fakegreg evals or emit baseline reports.")
+    parser = argparse.ArgumentParser(description="Run fakegreg evals, emit reports, or compare runs.")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     report = subparsers.add_parser("report", help="Summarize the current corpus into an eval result file.")
@@ -30,6 +38,18 @@ def parse_args() -> argparse.Namespace:
         "--out",
         type=Path,
         default=ROOT / "data" / "evals" / "baseline.json",
+        help="Latest pointer path (also archived under data/evals/runs/<id>/).",
+    )
+    report.add_argument(
+        "--runs-dir",
+        type=Path,
+        default=ROOT / "data" / "evals" / "runs",
+        help="Directory for timestamped eval history.",
+    )
+    report.add_argument(
+        "--no-history",
+        action="store_true",
+        help="Skip writing a timestamped copy under data/evals/runs/.",
     )
 
     run = subparsers.add_parser("run", help="Run a prompt set through the skill prompts with an OpenAI-compatible API.")
@@ -51,11 +71,39 @@ def parse_args() -> argparse.Namespace:
         "--base-url",
         default=os.environ.get("FAKEGREG_BASE_URL", os.environ.get("CROF_BASE_URL", "https://crof.ai/v1")),
     )
+
+    compare = subparsers.add_parser("compare", help="Compare two eval result JSON files.")
+    compare.add_argument(
+        "--base",
+        type=Path,
+        required=True,
+        help="Baseline eval result JSON.",
+    )
+    compare.add_argument(
+        "--head",
+        type=Path,
+        required=True,
+        help="Candidate eval result JSON.",
+    )
+    compare.add_argument(
+        "--fail-on-regression",
+        action="store_true",
+        help="Exit non-zero when acceptance regressions or score drops are found.",
+    )
+    compare.add_argument(
+        "--out",
+        type=Path,
+        default=None,
+        help="Optional path to write the comparison JSON.",
+    )
     return parser.parse_args()
 
 
 def repo_relative(path: Path) -> str:
-    return str(path.relative_to(ROOT))
+    try:
+        return str(path.relative_to(ROOT))
+    except ValueError:
+        return str(path)
 
 
 def build_skill_prompt(skill_name: str) -> str:
@@ -120,11 +168,13 @@ def parse_overall_score(analysis_text: str) -> int | None:
     return int(match.group(1))
 
 
-def command_report(prompt_set_path: Path, out_path: Path) -> int:
-    prompt_set = load_json(prompt_set_path)
-    specimens = discover_specimens()
-    results = []
+def write_json(path: Path, payload: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
 
+
+def build_report_payload(prompt_set: dict[str, Any], specimens: dict[str, tuple[Path, dict[str, Any]]]) -> dict[str, Any]:
+    results = []
     for entry in prompt_set["entries"]:
         specimen_id = entry["specimen_id"]
         specimen_dir, manifest = specimens[specimen_id]
@@ -134,6 +184,9 @@ def command_report(prompt_set_path: Path, out_path: Path) -> int:
                 "prompt_id": entry["id"],
                 "specimen_id": specimen_id,
                 "surface": entry["surface"],
+                "kind": manifest.get("kind"),
+                "provenance": manifest.get("generator", {}).get("provenance"),
+                "scorer": manifest.get("score_meta", {}).get("scorer"),
                 "overall_score": manifest["scores"]["overall"],
                 "acceptance_passed": acceptance["passed"],
                 "analysis_path": acceptance.get("analysis_path"),
@@ -141,20 +194,55 @@ def command_report(prompt_set_path: Path, out_path: Path) -> int:
             }
         )
 
-    payload = {
+    created_at = datetime.now(UTC).isoformat()
+    run_id = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
+    return {
         "prompt_set": prompt_set["id"],
-        "created_at": datetime.now(UTC).isoformat(),
+        "created_at": created_at,
         "mode": "report",
+        "run_id": run_id,
+        "skill_hashes": skill_prompt_hashes(),
+        "summary": summarize_results(results),
         "results": results,
     }
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
 
+
+def command_report(prompt_set_path: Path, out_path: Path, runs_dir: Path, no_history: bool) -> int:
+    prompt_set = load_json(prompt_set_path)
+    specimens = discover_specimens()
+    payload = build_report_payload(prompt_set, specimens)
+
+    write_json(out_path, payload)
     print(f"Wrote {repo_relative(out_path)}")
-    for result in results:
+
+    if not no_history:
+        history_path = runs_dir / payload["run_id"] / "report.json"
+        write_json(history_path, payload)
+        print(f"Wrote {repo_relative(history_path)}")
+        latest_path = runs_dir / "latest.json"
+        write_json(
+            latest_path,
+            {
+                "run_id": payload["run_id"],
+                "created_at": payload["created_at"],
+                "mode": payload["mode"],
+                "path": repo_relative(history_path),
+            },
+        )
+        print(f"Wrote {repo_relative(latest_path)}")
+
+    for result in payload["results"]:
         status = "PASS" if result["acceptance_passed"] else "FAIL"
-        print(f"{status} {result['prompt_id']} score={result['overall_score']}")
-    return 0
+        print(
+            f"{status} {result['prompt_id']} score={result['overall_score']} "
+            f"provenance={result.get('provenance')} scorer={result.get('scorer')}"
+        )
+    summary = payload["summary"]
+    print(
+        f"summary count={summary['count']} passed={summary['passed']} "
+        f"mean={summary['mean_overall_score']} candidate_mean={summary['mean_candidate_score']}"
+    )
+    return 0 if summary["failed"] == 0 else 1
 
 
 def command_run(prompt_set_path: Path, out_dir: Path, model: str, base_url: str) -> int:
@@ -202,8 +290,17 @@ def command_run(prompt_set_path: Path, out_dir: Path, model: str, base_url: str)
                 "prompt_id": prompt_id,
                 "specimen_id": entry["specimen_id"],
                 "surface": entry["surface"],
+                "kind": specimen_manifest.get("kind"),
+                "provenance": "real_api" if entry["skill"] is not None else specimen_manifest.get(
+                    "generator", {}
+                ).get("provenance"),
+                "scorer": "skill" if entry["skill"] is not None else specimen_manifest.get("score_meta", {}).get(
+                    "scorer"
+                ),
                 "overall_score": parsed_score,
-                "acceptance_passed": False if entry["skill"] is None else (
+                "acceptance_passed": False
+                if entry["skill"] is None
+                else (
                     parsed_score >= acceptance.get("minimum_score", 0)
                     and (
                         acceptance.get("maximum_score") is None
@@ -218,30 +315,82 @@ def command_run(prompt_set_path: Path, out_dir: Path, model: str, base_url: str)
         if entry["skill"] is not None:
             print(f"Wrote {repo_relative(analysis_path)} score={parsed_score}")
 
+    payload = {
+        "prompt_set": prompt_set["id"],
+        "created_at": datetime.now(UTC).isoformat(),
+        "mode": "run",
+        "run_id": timestamp,
+        "skill_hashes": skill_prompt_hashes(),
+        "summary": summarize_results(manifest_entries),
+        "results": manifest_entries,
+    }
     result_path = run_dir / "result.json"
-    result_path.write_text(
-        json.dumps(
-            {
-                "prompt_set": prompt_set["id"],
-                "created_at": datetime.now(UTC).isoformat(),
-                "mode": "run",
-                "results": manifest_entries,
-            },
-            indent=2,
-        )
-        + "\n",
-        encoding="utf-8",
+    write_json(result_path, payload)
+    write_json(
+        out_dir / "latest.json",
+        {
+            "run_id": timestamp,
+            "created_at": payload["created_at"],
+            "mode": "run",
+            "path": repo_relative(result_path),
+        },
     )
     print(f"Wrote {repo_relative(result_path)}")
+    return 0
+
+
+def command_compare(base_path: Path, head_path: Path, fail_on_regression: bool, out_path: Path | None) -> int:
+    base = load_json(base_path)
+    head = load_json(head_path)
+    comparison = compare_eval_results(base, head)
+    comparison["base_path"] = repo_relative(base_path)
+    comparison["head_path"] = repo_relative(head_path)
+
+    if out_path is not None:
+        write_json(out_path, comparison)
+        print(f"Wrote {repo_relative(out_path)}")
+
+    print(f"base={comparison['base_path']} ({comparison.get('base_created_at')})")
+    print(f"head={comparison['head_path']} ({comparison.get('head_created_at')})")
+    print(f"mean_overall_delta={comparison['mean_overall_delta']}")
+
+    if comparison["deltas"]:
+        print("\nPer-prompt deltas:")
+        for item in comparison["deltas"]:
+            pass_note = ""
+            if item["pass_changed"]:
+                pass_note = f" pass {item['base_passed']}->{item['head_passed']}"
+            print(
+                f"  {item['prompt_id']}: {item['base_score']} -> {item['head_score']} "
+                f"({item['score_delta']:+}){pass_note}"
+            )
+
+    if comparison["regressions"]:
+        print("\nRegressions:")
+        for prompt_id in comparison["regressions"]:
+            print(f"  - {prompt_id}")
+    if comparison["missing_in_head"]:
+        print("\nMissing in head:")
+        for prompt_id in comparison["missing_in_head"]:
+            print(f"  - {prompt_id}")
+    if comparison["improvements"]:
+        print("\nImprovements:")
+        for prompt_id in comparison["improvements"]:
+            print(f"  - {prompt_id}")
+
+    if fail_on_regression and comparison["has_regressions"]:
+        return 1
     return 0
 
 
 def main() -> int:
     args = parse_args()
     if args.command == "report":
-        return command_report(args.prompt_set, args.out)
+        return command_report(args.prompt_set, args.out, args.runs_dir, args.no_history)
     if args.command == "run":
         return command_run(args.prompt_set, args.out_dir, args.model, args.base_url)
+    if args.command == "compare":
+        return command_compare(args.base, args.head, args.fail_on_regression, args.out)
     raise AssertionError("unreachable")
 
 
