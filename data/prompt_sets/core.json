@@ -1,0 +1,55 @@
+{
+  "id": "core",
+  "description": "Baseline fakegreg prompt set spanning reference, landing, dashboard, docs, pricing, and anti-example surfaces.",
+  "entries": [
+    {
+      "id": "meridian-reference",
+      "specimen_id": "meridian-gold",
+      "skill": "greg-direct-repro",
+      "surface": "landing_page",
+      "prompt": "Create a beautiful, complete, self-contained modern landing page for a global edge AI product with an interactive network visual, // kickers, geometric unicode icons, a styled code quickstart, and big credible metrics."
+    },
+    {
+      "id": "forgenet-direct",
+      "specimen_id": "forgenet-direct",
+      "skill": "greg-direct-repro",
+      "surface": "landing_page",
+      "prompt": "Build a landing page for ForgeNet, a global mesh for specialized agents. Make it feel like a Greg-style infrastructure launch page."
+    },
+    {
+      "id": "forgenet-enhanced",
+      "specimen_id": "forgenet-enhanced",
+      "skill": "greg-ui-enhance",
+      "surface": "landing_page",
+      "prompt": "Enhance the ForgeNet landing with stronger canvas layers, sharper copy, and more Meridian-like polish while keeping it runnable."
+    },
+    {
+      "id": "relay-ops-dashboard",
+      "specimen_id": "relay-ops-dashboard",
+      "skill": "greg-direct-repro",
+      "surface": "dashboard",
+      "prompt": "Create an ops dashboard for RelayOps, a global incident coordination mesh for AI infrastructure teams. Keep the Greg proof density, but translate it into an operator control surface."
+    },
+    {
+      "id": "vectordocs-home",
+      "specimen_id": "vectordocs-home",
+      "skill": "greg-direct-repro",
+      "surface": "docs_home",
+      "prompt": "Create a developer docs home for VectorDocs, a distributed vector database. Preserve Greg hierarchy and polish while prioritizing quickstarts and navigation clarity."
+    },
+    {
+      "id": "meshdb-pricing-react",
+      "specimen_id": "meshdb-pricing-react",
+      "skill": "greg-direct-repro",
+      "surface": "framework_component",
+      "prompt": "Create a React/TSX pricing page for MeshDB, a privacy-first global sync database, with Greg-style packaging narrative, credible usage numbers, and strong enterprise framing."
+    },
+    {
+      "id": "generic-cloud-anti",
+      "specimen_id": "generic-cloud-anti",
+      "skill": null,
+      "surface": "landing_page",
+      "prompt": "Control specimen: intentionally generic cloud landing page to act as a negative example for Greg fidelity."
+    }
+  ]
+}

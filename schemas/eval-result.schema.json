@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fakegreg/eval-result.schema.json",
+  "title": "fakegreg eval result",
+  "type": "object",
+  "required": [
+    "prompt_set",
+    "created_at",
+    "mode",
+    "results"
+  ],
+  "properties": {
+    "prompt_set": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "report",
+        "run"
+      ]
+    },
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "prompt_id",
+          "specimen_id",
+          "surface",
+          "overall_score",
+          "acceptance_passed"
+        ],
+        "properties": {
+          "prompt_id": {
+            "type": "string"
+          },
+          "specimen_id": {
+            "type": "string"
+          },
+          "surface": {
+            "type": "string"
+          },
+          "overall_score": {
+            "type": "number"
+          },
+          "acceptance_passed": {
+            "type": "boolean"
+          },
+          "analysis_path": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "output_path": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

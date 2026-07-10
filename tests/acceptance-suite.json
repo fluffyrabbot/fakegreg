@@ -1,0 +1,34 @@
+{
+  "id": "baseline",
+  "description": "Baseline acceptance suite for canonical fakegreg specimens.",
+  "specimens": [
+    {
+      "id": "meridian-gold",
+      "expect_pass": true
+    },
+    {
+      "id": "forgenet-direct",
+      "expect_pass": true
+    },
+    {
+      "id": "forgenet-enhanced",
+      "expect_pass": true
+    },
+    {
+      "id": "relay-ops-dashboard",
+      "expect_pass": true
+    },
+    {
+      "id": "vectordocs-home",
+      "expect_pass": true
+    },
+    {
+      "id": "meshdb-pricing-react",
+      "expect_pass": true
+    },
+    {
+      "id": "generic-cloud-anti",
+      "expect_pass": true
+    }
+  ]
+}

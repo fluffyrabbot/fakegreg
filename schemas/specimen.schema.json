@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fakegreg/specimen.schema.json",
+  "title": "fakegreg specimen",
+  "type": "object",
+  "required": [
+    "id",
+    "title",
+    "kind",
+    "surface",
+    "prompt_path",
+    "generator",
+    "artifacts",
+    "scores",
+    "acceptance",
+    "tags"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "reference",
+        "candidate",
+        "anti_example"
+      ]
+    },
+    "surface": {
+      "type": "string",
+      "enum": [
+        "landing_page",
+        "dashboard",
+        "docs_home",
+        "pricing_page",
+        "framework_component"
+      ]
+    },
+    "prompt_path": {
+      "type": "string"
+    },
+    "generator": {
+      "type": "object",
+      "required": [
+        "source",
+        "model",
+        "skill",
+        "provenance"
+      ],
+      "properties": {
+        "source": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        },
+        "skill": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "generated_at": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "provenance": {
+          "type": "string"
+        }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "required": [
+        "raw_output_path",
+        "screenshot_path",
+        "analysis_path",
+        "notes_path"
+      ],
+      "properties": {
+        "raw_output_path": {
+          "type": "string"
+        },
+        "rendered_output_path": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "screenshot_path": {
+          "type": "string"
+        },
+        "analysis_path": {
+          "type": "string"
+        },
+        "notes_path": {
+          "type": "string"
+        }
+      }
+    },
+    "scores": {
+      "type": "object",
+      "required": [
+        "overall",
+        "design_quality",
+        "visual_polish",
+        "narrative_copy",
+        "implementation",
+        "greg_fidelity"
+      ],
+      "properties": {
+        "overall": {
+          "type": "number"
+        },
+        "design_quality": {
+          "type": "number"
+        },
+        "visual_polish": {
+          "type": "number"
+        },
+        "narrative_copy": {
+          "type": "number"
+        },
+        "implementation": {
+          "type": "number"
+        },
+        "greg_fidelity": {
+          "type": "number"
+        }
+      }
+    },
+    "acceptance": {
+      "type": "object",
+      "required": [
+        "minimum_score",
+        "required_sections",
+        "required_visuals",
+        "minimum_kickers",
+        "analysis_shape"
+      ],
+      "properties": {
+        "minimum_score": {
+          "type": "number"
+        },
+        "maximum_score": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "required_sections": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "required_visuals": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "minimum_kickers": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "analysis_shape": {
+          "type": "string"
+        }
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

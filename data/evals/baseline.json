@@ -1,0 +1,70 @@
+{
+  "prompt_set": "core",
+  "created_at": "2026-07-10T00:07:08.374528+00:00",
+  "mode": "report",
+  "results": [
+    {
+      "prompt_id": "meridian-reference",
+      "specimen_id": "meridian-gold",
+      "surface": "landing_page",
+      "overall_score": 96,
+      "acceptance_passed": true,
+      "analysis_path": "data/specimens/meridian-gold/analysis.md",
+      "output_path": "data/specimens/meridian-gold/output.html"
+    },
+    {
+      "prompt_id": "forgenet-direct",
+      "specimen_id": "forgenet-direct",
+      "surface": "landing_page",
+      "overall_score": 82,
+      "acceptance_passed": true,
+      "analysis_path": "data/specimens/forgenet-direct/analysis.md",
+      "output_path": "data/specimens/forgenet-direct/output.html"
+    },
+    {
+      "prompt_id": "forgenet-enhanced",
+      "specimen_id": "forgenet-enhanced",
+      "surface": "landing_page",
+      "overall_score": 87,
+      "acceptance_passed": true,
+      "analysis_path": "data/specimens/forgenet-enhanced/analysis.md",
+      "output_path": "data/specimens/forgenet-enhanced/output.html"
+    },
+    {
+      "prompt_id": "relay-ops-dashboard",
+      "specimen_id": "relay-ops-dashboard",
+      "surface": "dashboard",
+      "overall_score": 88,
+      "acceptance_passed": true,
+      "analysis_path": "data/specimens/relay-ops-dashboard/analysis.md",
+      "output_path": "data/specimens/relay-ops-dashboard/output.html"
+    },
+    {
+      "prompt_id": "vectordocs-home",
+      "specimen_id": "vectordocs-home",
+      "surface": "docs_home",
+      "overall_score": 86,
+      "acceptance_passed": true,
+      "analysis_path": "data/specimens/vectordocs-home/analysis.md",
+      "output_path": "data/specimens/vectordocs-home/output.html"
+    },
+    {
+      "prompt_id": "meshdb-pricing-react",
+      "specimen_id": "meshdb-pricing-react",
+      "surface": "framework_component",
+      "overall_score": 84,
+      "acceptance_passed": true,
+      "analysis_path": "data/specimens/meshdb-pricing-react/analysis.md",
+      "output_path": "data/specimens/meshdb-pricing-react/rendered.html"
+    },
+    {
+      "prompt_id": "generic-cloud-anti",
+      "specimen_id": "generic-cloud-anti",
+      "surface": "landing_page",
+      "overall_score": 41,
+      "acceptance_passed": true,
+      "analysis_path": "data/specimens/generic-cloud-anti/analysis.md",
+      "output_path": "data/specimens/generic-cloud-anti/output.html"
+    }
+  ]
+}
