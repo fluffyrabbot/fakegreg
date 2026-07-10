@@ -29,8 +29,10 @@ The Meridian example remains the repo’s quality ceiling, but the corpus now wi
 | `.grok/skills/` | Direct repro, analyzer, enhancer, and landing specialist skills |
 | `data/specimens/` | Strict specimen bundles with prompt, output, screenshot, analysis, notes, and manifest |
 | `data/prompt_sets/core.json` | Fixed baseline prompt set for eval/reporting |
-| `scripts/fakegreg_acceptance.py` | Lightweight acceptance checks over the corpus |
-| `scripts/fakegreg_eval.py` | Baseline reporting and optional API-backed eval runs |
+| `scripts/fakegreg_acceptance.py` | Schema-backed acceptance checks over the corpus |
+| `scripts/fakegreg_eval.py` | Baseline reports, run history, compare, and API evals |
+| `data/evals/` | Committed baseline + timestamped eval history |
+| `Makefile` | `accept` / `report` / `compare` / `test` / `ci` shortcuts |
 | `data/generated/` | Scratch/ad hoc generated artifacts |
 
 ## Shared references
@@ -66,6 +68,13 @@ Every specimen now lives in its own directory under `data/specimens/<id>/` and i
 
 The schema lives in `schemas/specimen.schema.json`.
 
+Every manifest must declare honest provenance and score metadata:
+
+- `generator.provenance`: `real_api` | `gallery_extract` | `skill_reproduction` | `synthetic_seed`
+- `generator.notes`: free-text caveats
+- `score_meta.scorer`: `human` | `skill` | `script`
+- `score_meta.scored_at` + optional `method`
+
 Included surfaces now span:
 - landing pages
 - dashboards
@@ -75,16 +84,24 @@ Included surfaces now span:
 
 ## Acceptance checks and evals
 
-Run the baseline checks:
+Quick path:
+
+```bash
+make accept   # schema + path + structure + score floors
+make test     # unit tests for helpers
+make report   # data/evals/baseline.json + data/evals/runs/<id>/report.json
+make ci       # local mirror of GitHub Actions
+```
+
+Or directly:
 
 ```bash
 python3 scripts/fakegreg_acceptance.py
-```
-
-Emit a baseline eval report from the current corpus:
-
-```bash
 python3 scripts/fakegreg_eval.py report
+python3 scripts/fakegreg_eval.py compare \
+  --base data/evals/baseline.json \
+  --head data/evals/runs/<run_id>/report.json \
+  --fail-on-regression
 ```
 
 Run the prompt set through an OpenAI-compatible API using the skill prompts:
@@ -96,20 +113,23 @@ python3 scripts/fakegreg_eval.py run --model greg-2-super
 
 By default the run command targets `https://crof.ai/v1/chat/completions`, but it also supports `FAKEGREG_API_KEY`, `FAKEGREG_BASE_URL`, and `FAKEGREG_MODEL`.
 
+CI (`.github/workflows/ci.yml`) runs unit tests, acceptance, and a baseline compare on every push/PR.
+
 ## Workflow
 
 1. Generate with `/greg-direct-repro` or `/greg-ui-landing`
 2. Analyze with `/greg-ui-analyze`
 3. Refine with `/greg-ui-enhance`
-4. Save strong outputs as specimen bundles
-5. Run acceptance + report to prevent taste drift
+4. Save strong outputs as specimen bundles with honest `provenance` + `score_meta`
+5. Run `make accept` and `make report` to prevent taste drift
+6. Use `compare --fail-on-regression` when changing skills or rubric thresholds
 
 ## Contribution direction
 
 High-value next work:
-- add more real Greg generations into `data/specimens/`
+- add more **real Greg API** generations (`provenance: real_api`) into `data/specimens/`
 - keep `references/STYLE_PRIMITIVES.md` and `references/ANTI_EXAMPLES.md` sharp
 - broaden non-landing surfaces further
-- use the eval harness to compare prompt and skill revisions instead of eyeballing them
+- use eval history + compare when revising skill prompts
 
 **GitHub**: https://github.com/fluffyrabbot/fakegreg

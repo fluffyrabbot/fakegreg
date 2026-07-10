@@ -1,0 +1,33 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  accept-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Unit tests
+        run: python3 -m unittest discover -s tests -p 'test_*.py' -v
+
+      - name: Specimen acceptance
+        run: python3 scripts/fakegreg_acceptance.py
+
+      - name: Baseline eval report
+        run: python3 scripts/fakegreg_eval.py report --no-history --out /tmp/fakegreg-baseline.json
+
+      - name: Compare report to committed baseline (informational)
+        run: |
+          python3 scripts/fakegreg_eval.py compare \
+            --base data/evals/baseline.json \
+            --head /tmp/fakegreg-baseline.json \
+            --fail-on-regression

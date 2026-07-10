@@ -16,6 +16,10 @@ npm-debug.log
 __pycache__/
 *.py[cod]
 .venv/
+.pytest_cache/
+
+# Local eval run pointers / scratch (committed baseline.json stays tracked)
+data/evals/runs/latest.json
 
 # Temp / generated that we don't want in repo by default
 *.log
