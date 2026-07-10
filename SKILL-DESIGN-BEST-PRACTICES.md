@@ -94,11 +94,11 @@ In the skill body, tell the agent exactly when and how to read these (e.g. "Alwa
 
 ## Specific Recommendations for This Repo (fakegreg / Greg UI Skills)
 
-- Always load `references/SENSIBILITIES.md` + the primary exemplar HTML/image early.
+- Always load the repo-root `references/` pack early (`SENSIBILITIES.md`, `STYLE_PRIMITIVES.md`, `PAGE_ARCHETYPES.md`, anti-examples, and the primary exemplar HTML/image).
 - Make the "Greg Fidelity" dimension explicit in analyzer/enhance skills.
 - Provide ready-to-paste example prompts for common gallery-style tasks (landing pages, dashboards, etc.).
 - Prefer self-contained runnable HTML+CSS+JS outputs for demos unless the user specifies a framework.
-- Document how to use with real Greg API (for ground-truth data generation).
+- Document how to use with the structured specimen corpus and real Greg API (for ground-truth data generation).
 - Keep the direct-repro skill "pure" (faithful reproduction) and use separate skills for enhancement/iteration/variants.
 
 ## Checklist Before Committing a Skill

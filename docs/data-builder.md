@@ -1,20 +1,22 @@
 # Greg UI Data Builder Notes
 
 ## Goal
-Curate high-quality (prompt → Greg output) pairs to improve the reproduction and enhancement skills over time.
+Curate high-quality specimen bundles that improve the reproduction and enhancement skills over time and can be regression-tested.
 
 ## Recommended Process
 1. Use real Greg (greg-2-ultra or super) via the CrofAI API for new generations.
 2. Use prompts modeled on the gallery (same prompt for fair comparisons, or targeted landing/dashboard prompts).
-3. Save:
-   - The exact prompt used
-   - The raw HTML/TSX output
-   - A screenshot (use browse or local render)
-   - Optional: analysis notes
-4. Add the best ones to:
-   - `data/examples/`
-   - Skill `references/` folders (for few-shot loading)
-5. Periodically distill new patterns back into `SENSIBILITIES.md` and the core skill prompts.
+3. Save a full specimen bundle:
+   - `prompt.md`
+   - raw HTML/TSX output
+   - rendered artifact if the raw output is framework code
+   - screenshot (use browse or local render)
+   - `analysis.md`
+   - `notes.md`
+   - `manifest.json`
+4. Add the specimen under `data/specimens/<id>/`.
+5. Promote only the strongest canonical references into `references/`.
+6. Periodically distill new patterns back into `references/SENSIBILITIES.md`, `references/STYLE_PRIMITIVES.md`, and the skill prompts.
 
 ## Example Prompt Template (for real Greg)
 "Create a beautiful, complete, self-contained modern landing page for [PRODUCT DESCRIPTION]. 
@@ -38,9 +40,9 @@ curl https://crof.ai/v1/chat/completions \
   }'
 ```
 
-## Future Tooling Ideas
-- Simple script that calls the API, saves HTML + screenshot.
-- Eval harness that runs several prompts and produces average "greg score" using the analyzer.
-- Visual diff against previous best seeds.
+## Built Tooling
+- `python3 scripts/fakegreg_acceptance.py` validates corpus shape and baseline thresholds.
+- `python3 scripts/fakegreg_eval.py report` emits a report from the current corpus.
+- `python3 scripts/fakegreg_eval.py run` uses an OpenAI-compatible API to run prompt sets through the skill prompts.
 
-Start manually, then automate.
+Start with the canonical bundle shape, then automate more collection over time.

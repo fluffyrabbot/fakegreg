@@ -1,31 +1,41 @@
-# fakegreg Status — 2026-06-21
+# fakegreg Status — 2026-06-22
 
-## Completed in Recommended Sequence
+## Completed
 
-1. **Research** — Deep dive into greg.crof.ai, gallery, benchmarks, HTML extraction from Meridian (winning output), contrasts (Opus, Sonnet), pricing, community signals.
-2. **Project setup** — README, SENSIBILITIES.md (distilled patterns), data/ + references/, screenshots.
-3. **Direct reproduction** — `greg-direct-repro` skill scaffolded + refined (references + instructions to load Meridian + SENSIBILITIES).
-4. **Analyzer** — `greg-ui-analyze` skill with crofbench-style rubric and structured output.
-5. **Enhancer loop** — `greg-ui-enhance` skill implementing the generate → analyze → refine workflow.
-6. **Variants + infra** — `greg-ui-landing` (specialized for the exact gallery style), data-builder.md guide, tests/ + data/generated/.
-7. **Refinement + test** — Generated ForgeNet test page (direct style), ran analysis (87/100), applied one polish enhancement (glow layer), archived results.
+1. **Research foundation** — Meridian reference, Greg sensibilities, benchmark framing, and skill strategy.
+2. **Core skill stack** — direct repro, analyzer, enhancer, and landing specialist in `.grok/skills/`.
+3. **Canonical reference pack** — shared `references/` directory with sensibilities, style primitives, page archetypes, anti-examples, and the Meridian seed.
+4. **Strict specimen corpus** — every canonical example now lives as a bundle in `data/specimens/` with prompt, output, screenshot, analysis, notes, and manifest.
+5. **Tiny eval harness** — `scripts/fakegreg_eval.py` emits baseline reports and can run prompt sets through an OpenAI-compatible API.
+6. **Acceptance checks** — `scripts/fakegreg_acceptance.py` validates corpus shape, required sections, required visuals, analyzer output structure, and score floors.
+7. **Broader corpus** — landing, dashboard, docs, pricing/framework, and anti-example surfaces are now represented.
 
-## Current Skills (all live in .grok/skills/)
+## Current Skills
+
 - /greg-direct-repro
 - /greg-ui-analyze
 - /greg-ui-enhance
 - /greg-ui-landing
 
 ## Key Files
-- SENSIBILITIES.md
-- data/examples/meridian-greg.html (gold reference)
-- tests/ and data/generated/ (loop demonstration)
-- docs/data-builder.md
+
+- `references/`
+- `data/specimens/`
+- `data/prompt_sets/core.json`
+- `scripts/fakegreg_acceptance.py`
+- `scripts/fakegreg_eval.py`
+- `docs/data-builder.md`
+
+## Current Baseline
+
+- `meridian-gold` is the reference ceiling.
+- `forgenet-direct` and `forgenet-enhanced` anchor the landing-page loop.
+- `relay-ops-dashboard`, `vectordocs-home`, and `meshdb-pricing-react` prevent overfitting to one archetype.
+- `generic-cloud-anti` is the negative control.
 
 ## Next Promising Steps
-- Add more real Greg generations (API) for better few-shots.
-- Implement a tiny eval script (prompt batch + analyzer scoring).
-- Add a dashboard variant.
-- Hook the skills more deeply with the browser skill for automated screenshot + analysis.
 
-The foundation for recording and iterating on Greg's UI sensibilities is now in place and functional.
+- Add real Greg API generations into the structured corpus.
+- Save eval snapshots over time for regression comparison.
+- Expand the non-landing corpus with richer dashboards and docs variants.
+- Improve analyzer rigor with additional anti-examples and pairwise comparisons.
