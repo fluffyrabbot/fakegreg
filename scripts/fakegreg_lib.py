@@ -595,3 +595,133 @@ def compare_eval_results(base: dict[str, Any], head: dict[str, Any]) -> dict[str
         "deltas": deltas,
         "has_regressions": bool(regressions or missing_in_head),
     }
+
+
+def validate_calibration_bands(
+    specimens: dict[str, tuple[Path, dict[str, Any]]],
+    bands_doc: dict[str, Any],
+) -> dict[str, Any]:
+    """Ensure specimen overall scores fall inside declared calibration bands."""
+    results = []
+    failures: list[str] = []
+    for entry in bands_doc.get("specimens", []):
+        specimen_id = entry["id"]
+        item: dict[str, Any] = {
+            "id": specimen_id,
+            "passed": True,
+            "errors": [],
+            "min": entry.get("min_overall"),
+            "max": entry.get("max_overall"),
+            "overall": None,
+        }
+        if specimen_id not in specimens:
+            item["passed"] = False
+            item["errors"].append("missing specimen")
+            failures.append(f"{specimen_id}: missing specimen")
+            results.append(item)
+            continue
+
+        _, manifest = specimens[specimen_id]
+        overall = float(manifest["scores"]["overall"])
+        item["overall"] = overall
+        min_overall = entry.get("min_overall")
+        max_overall = entry.get("max_overall")
+        if min_overall is not None and overall < float(min_overall):
+            item["passed"] = False
+            item["errors"].append(f"overall {overall} below min {min_overall}")
+        if max_overall is not None and overall > float(max_overall):
+            item["passed"] = False
+            item["errors"].append(f"overall {overall} above max {max_overall}")
+
+        expected_kind = entry.get("kind")
+        if expected_kind and manifest.get("kind") != expected_kind:
+            item["passed"] = False
+            item["errors"].append(f"kind {manifest.get('kind')!r} != expected {expected_kind!r}")
+
+        expected_provenance = entry.get("provenance")
+        actual_provenance = manifest.get("generator", {}).get("provenance")
+        if expected_provenance and actual_provenance != expected_provenance:
+            item["passed"] = False
+            item["errors"].append(
+                f"provenance {actual_provenance!r} != expected {expected_provenance!r}"
+            )
+
+        if not item["passed"]:
+            failures.append(f"{specimen_id}: {'; '.join(item['errors'])}")
+        results.append(item)
+
+    return {
+        "checked": len(results),
+        "results": results,
+        "failures": failures,
+        "passed": not failures,
+    }
+
+
+def pairwise_consistency(
+    specimens: dict[str, tuple[Path, dict[str, Any]]],
+    pairwise_doc: dict[str, Any],
+) -> dict[str, Any]:
+    """Check that prefer/over pairs respect overall score ordering (and optional margins)."""
+    results = []
+    failures: list[str] = []
+    for entry in pairwise_doc.get("pairs", []):
+        pair_id = entry.get("id") or f"{entry['prefer']}>{entry['over']}"
+        prefer_id = entry["prefer"]
+        over_id = entry["over"]
+        margin = float(entry.get("min_margin", 0))
+        item: dict[str, Any] = {
+            "id": pair_id,
+            "prefer": prefer_id,
+            "over": over_id,
+            "passed": True,
+            "errors": [],
+            "prefer_score": None,
+            "over_score": None,
+            "margin": margin,
+        }
+
+        missing = [sid for sid in (prefer_id, over_id) if sid not in specimens]
+        if missing:
+            item["passed"] = False
+            item["errors"].append(f"missing specimens: {', '.join(missing)}")
+            failures.append(f"{pair_id}: {item['errors'][0]}")
+            results.append(item)
+            continue
+
+        prefer_score = float(specimens[prefer_id][1]["scores"]["overall"])
+        over_score = float(specimens[over_id][1]["scores"]["overall"])
+        item["prefer_score"] = prefer_score
+        item["over_score"] = over_score
+        delta = prefer_score - over_score
+        if delta < margin:
+            item["passed"] = False
+            item["errors"].append(
+                f"expected {prefer_id} ({prefer_score}) >= {over_id} ({over_score}) + margin {margin}; delta={delta}"
+            )
+            failures.append(f"{pair_id}: {item['errors'][0]}")
+        results.append(item)
+
+    return {
+        "checked": len(results),
+        "results": results,
+        "failures": failures,
+        "passed": not failures,
+    }
+
+
+def format_pairwise_prompt(pair: dict[str, Any], prefer_excerpt: str, over_excerpt: str) -> str:
+    """Build a forced-choice analyzer prompt for A/B preference."""
+    return (
+        "You are performing a pairwise Greg-fidelity comparison.\n"
+        "Choose exactly one winner. Do not score absolute quality unless asked.\n\n"
+        f"Pair id: {pair.get('id', 'unnamed')}\n"
+        f"Question: {pair.get('question', 'Which output is more Greg-like?')}\n"
+        f"Context: {pair.get('rationale', '')}\n\n"
+        f"### Candidate A ({pair['prefer']})\n{prefer_excerpt}\n\n"
+        f"### Candidate B ({pair['over']})\n{over_excerpt}\n\n"
+        "Respond in this exact format:\n"
+        "Winner: A|B\n"
+        "Confidence: high|medium|low\n"
+        "Why: <one paragraph>\n"
+    )

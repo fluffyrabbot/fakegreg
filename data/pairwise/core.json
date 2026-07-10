@@ -1,0 +1,54 @@
+{
+  "id": "core-pairwise",
+  "description": "Forced-choice Greg-fidelity preferences. prefer must score at least min_margin above over.",
+  "pairs": [
+    {
+      "id": "meridian-over-generic",
+      "prefer": "meridian-gold",
+      "over": "generic-cloud-anti",
+      "min_margin": 30,
+      "question": "Which feels more like Greg-2 Meridian-level product UI?",
+      "rationale": "Gold reference must dominate the synthetic anti-example."
+    },
+    {
+      "id": "meridian-over-opus-gallery",
+      "prefer": "meridian-gold",
+      "over": "opus-gallery-anti",
+      "min_margin": 15,
+      "question": "On the shared gallery prompt, which output is more Greg-like?",
+      "rationale": "Greg ultra gallery winner should beat the Opus gallery peer."
+    },
+    {
+      "id": "nexus-super-over-opus",
+      "prefer": "nexus-super-gold",
+      "over": "opus-gallery-anti",
+      "min_margin": 8,
+      "question": "Between greg-2-super and opus-4.8 gallery pages, which is more Greg-like?",
+      "rationale": "Same prompt family; Greg super should still rank above Opus."
+    },
+    {
+      "id": "forgenet-enhanced-over-direct",
+      "prefer": "forgenet-enhanced",
+      "over": "forgenet-direct",
+      "min_margin": 2,
+      "question": "Did the enhance loop improve ForgeNet Greg fidelity?",
+      "rationale": "Enhancer output should beat its direct baseline."
+    },
+    {
+      "id": "forgenet-enhanced-over-generic",
+      "prefer": "forgenet-enhanced",
+      "over": "generic-cloud-anti",
+      "min_margin": 25,
+      "question": "Skill-enhanced landing vs generic cloud anti-example.",
+      "rationale": "Even non-gold Greg-style work must clear the anti-example floor by a wide margin."
+    },
+    {
+      "id": "relay-over-generic",
+      "prefer": "relay-ops-dashboard",
+      "over": "generic-cloud-anti",
+      "min_margin": 25,
+      "question": "Dashboard surface still more Greg-like than generic landing anti-example?",
+      "rationale": "Surface translation should not collapse fidelity below anti-example."
+    }
+  ]
+}

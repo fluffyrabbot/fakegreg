@@ -15,9 +15,11 @@ from fakegreg_lib import (  # noqa: E402
     compare_eval_results,
     count_kickers,
     is_safe_relative_path,
+    pairwise_consistency,
     resolve_under,
     run_acceptance,
     summarize_results,
+    validate_calibration_bands,
     validate_manifest_schema,
 )
 
@@ -205,6 +207,28 @@ class CorpusSmokeTests(unittest.TestCase):
             manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
             errors = validate_manifest_schema(manifest)
             self.assertEqual(errors, [], msg=f"{manifest_path}: {errors}")
+
+
+class CalibrationTests(unittest.TestCase):
+    def test_bands_and_pairwise_on_corpus(self):
+        from fakegreg_lib import discover_specimens, load_json
+
+        specimens = discover_specimens()
+        bands = load_json(ROOT / "data" / "calibration" / "bands.json")
+        pairwise = load_json(ROOT / "data" / "pairwise" / "core.json")
+        band_result = validate_calibration_bands(specimens, bands)
+        pair_result = pairwise_consistency(specimens, pairwise)
+        self.assertTrue(band_result["passed"], band_result["failures"])
+        self.assertTrue(pair_result["passed"], pair_result["failures"])
+
+    def test_pairwise_detects_inversion(self):
+        specimens = {
+            "a": (Path("a"), {"scores": {"overall": 50}}),
+            "b": (Path("b"), {"scores": {"overall": 90}}),
+        }
+        doc = {"pairs": [{"id": "bad", "prefer": "a", "over": "b", "min_margin": 5}]}
+        result = pairwise_consistency(specimens, doc)
+        self.assertFalse(result["passed"])
 
 
 if __name__ == "__main__":

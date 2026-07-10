@@ -1,0 +1,72 @@
+{
+  "id": "core-bands",
+  "description": "Expected overall score bands for calibration. Analyzer and human scores should land inside these ranges.",
+  "specimens": [
+    {
+      "id": "meridian-gold",
+      "kind": "reference",
+      "provenance": "gallery_extract",
+      "min_overall": 90,
+      "max_overall": 100,
+      "notes": "Reference ceiling."
+    },
+    {
+      "id": "nexus-super-gold",
+      "kind": "reference",
+      "provenance": "gallery_extract",
+      "min_overall": 82,
+      "max_overall": 96,
+      "notes": "Live greg-2-super gallery peer for the shared Meridian-style prompt."
+    },
+    {
+      "id": "forgenet-enhanced",
+      "kind": "candidate",
+      "provenance": "skill_reproduction",
+      "min_overall": 82,
+      "max_overall": 94
+    },
+    {
+      "id": "forgenet-direct",
+      "kind": "candidate",
+      "provenance": "skill_reproduction",
+      "min_overall": 75,
+      "max_overall": 90
+    },
+    {
+      "id": "relay-ops-dashboard",
+      "kind": "candidate",
+      "provenance": "synthetic_seed",
+      "min_overall": 80,
+      "max_overall": 94
+    },
+    {
+      "id": "vectordocs-home",
+      "kind": "candidate",
+      "provenance": "synthetic_seed",
+      "min_overall": 78,
+      "max_overall": 92
+    },
+    {
+      "id": "meshdb-pricing-react",
+      "kind": "candidate",
+      "provenance": "synthetic_seed",
+      "min_overall": 76,
+      "max_overall": 92
+    },
+    {
+      "id": "generic-cloud-anti",
+      "kind": "anti_example",
+      "provenance": "synthetic_seed",
+      "min_overall": 0,
+      "max_overall": 55
+    },
+    {
+      "id": "opus-gallery-anti",
+      "kind": "anti_example",
+      "provenance": "gallery_extract",
+      "min_overall": 0,
+      "max_overall": 70,
+      "notes": "Competent non-Greg gallery peer; must rank below Greg references."
+    }
+  ]
+}
