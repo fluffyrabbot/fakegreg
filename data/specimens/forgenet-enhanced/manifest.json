@@ -1,0 +1,38 @@
+{
+  "id": "forgenet-enhanced",
+  "title": "ForgeNet enhanced landing",
+  "kind": "candidate",
+  "surface": "landing_page",
+  "prompt_path": "prompt.md",
+  "generator": {
+    "source": "repo enhancement artifact",
+    "model": "fakegreg workflow",
+    "skill": "greg-ui-enhance",
+    "generated_at": "2026-06-21",
+    "provenance": "Enhanced from the direct ForgeNet specimen after analyzer-guided refinement."
+  },
+  "artifacts": {
+    "raw_output_path": "output.html",
+    "rendered_output_path": "output.html",
+    "screenshot_path": "screenshot.png",
+    "analysis_path": "analysis.md",
+    "notes_path": "notes.md"
+  },
+  "scores": {
+    "overall": 87,
+    "design_quality": 90,
+    "visual_polish": 84,
+    "narrative_copy": 91,
+    "implementation": 88,
+    "greg_fidelity": 85
+  },
+  "acceptance": {
+    "minimum_score": 85,
+    "maximum_score": null,
+    "required_sections": ["hero", "features", "code_block", "metrics", "cta"],
+    "required_visuals": ["canvas_or_svg"],
+    "minimum_kickers": 3,
+    "analysis_shape": "greg_ui_analysis_v1"
+  },
+  "tags": ["candidate", "landing", "enhanced", "forgenet"]
+}

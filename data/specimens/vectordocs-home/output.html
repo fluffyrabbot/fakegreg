@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>VectorDocs</title>
+<style>
+:root{--bg:#0b0d12;--panel:#11151c;--line:#202733;--fg:#eef2f7;--muted:#8a95a7;--accent:#9bb8ff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+nav{border-bottom:1px solid var(--line);background:rgba(11,13,18,.9);backdrop-filter:blur(12px);position:sticky;top:0}
+.nav{display:flex;justify-content:space-between;align-items:center;padding:15px 0}.links{display:flex;gap:18px;color:#c4cedf;font-size:14px}.btn{background:#edf2ff;color:#05070c;text-decoration:none;padding:9px 14px;border-radius:8px;font-weight:600}
+.hero{padding:48px 0 28px}.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:26px;align-items:start}.kicker{font:12px monospace;color:#8692a7;margin-bottom:8px}
+h1{font-size:42px;line-height:1.04;margin:0 0 10px}.sub{color:#a6b1c2;max-width:620px;font-size:17px}
+.panel,.card{background:var(--panel);border:1px solid var(--line);border-radius:16px}.panel{padding:18px}.code{overflow:hidden}.bar{padding:8px 12px;background:#151a23;border-bottom:1px solid #1d2330;font-size:12px}
+pre{margin:0;padding:14px;font-size:13px;overflow:auto;color:#dbe6ff}
+.paths{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:24px 0}.card{padding:18px}.tag{font:10px monospace;color:#8490a4;margin-top:8px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding-bottom:40px}.list{display:grid;gap:12px;color:#a7b2c4}
+svg{display:block;width:100%;height:auto}
+</style>
+</head>
+<body>
+<nav><div class="wrap nav"><strong>VectorDocs</strong><div class="links"><span>Guides</span><span>API</span><span>Operations</span><span>SDKs</span><a class="btn" href="#">Open quickstart</a></div></div></nav>
+<section class="hero"><div class="wrap hero-grid">
+  <div>
+    <div class="kicker">// developer entrypoint</div>
+    <h1>Ship the first query<br>before you lose the thread.</h1>
+    <p class="sub">VectorDocs is the shortest path from “what is this system?” to “it is running in prod.” Start with one command, then choose the lane you actually need.</p>
+    <div class="paths">
+      <div class="card"><h3>SDK quickstarts</h3><p>JavaScript, Python, Go, and Rust paths tuned for the first successful query.</p><div class="tag">FIRST QUERY · 5 MINUTES</div></div>
+      <div class="card"><h3>API reference</h3><p>Exact request shapes, streaming semantics, and index lifecycle behavior.</p><div class="tag">HTTP · gRPC · BATCH</div></div>
+      <div class="card"><h3>Operations</h3><p>Replication, compaction, latency budgets, and failure recovery playbooks.</p><div class="tag">SRE READY · MULTI-REGION</div></div>
+    </div>
+  </div>
+  <div class="panel code">
+    <div class="bar">quickstart.sh</div>
+    <pre>curl https://api.vectordocs.dev/v1/indexes \
+  -H "Authorization: Bearer $VECTOR_KEY" \
+  -d '{"name":"docs-search","dimension":1536}'</pre>
+  </div>
+</div></section>
+<section class="wrap grid">
+  <div class="panel">
+    <div class="kicker">// learn the shape</div>
+    <h3>Pick the path that matches the job.</h3>
+    <div class="list">
+      <div><strong>Build search</strong> — schema, ingestion, ranking, and evaluation.</div>
+      <div><strong>Run globally</strong> — failover, replication, and latency-aware routing.</div>
+      <div><strong>Embed apps</strong> — client libraries, auth, and multi-tenant concerns.</div>
+    </div>
+  </div>
+  <div class="panel">
+    <svg viewBox="0 0 420 220" role="img" aria-label="Documentation map">
+      <rect width="420" height="220" rx="18" fill="#0d1118"/>
+      <rect x="24" y="34" width="102" height="50" rx="10" fill="#141a24" stroke="#263045"/>
+      <rect x="160" y="34" width="102" height="50" rx="10" fill="#141a24" stroke="#263045"/>
+      <rect x="296" y="34" width="102" height="50" rx="10" fill="#141a24" stroke="#263045"/>
+      <rect x="92" y="132" width="102" height="50" rx="10" fill="#141a24" stroke="#263045"/>
+      <rect x="228" y="132" width="102" height="50" rx="10" fill="#141a24" stroke="#263045"/>
+      <path d="M126 84L143 132M279 84L279 132M211 84L211 132" stroke="#5f78b5"/>
+      <text x="43" y="63" fill="#dbe6ff" font-size="14">Quickstarts</text>
+      <text x="180" y="63" fill="#dbe6ff" font-size="14">API</text>
+      <text x="315" y="63" fill="#dbe6ff" font-size="14">Operations</text>
+      <text x="112" y="161" fill="#dbe6ff" font-size="14">Examples</text>
+      <text x="249" y="161" fill="#dbe6ff" font-size="14">Release notes</text>
+    </svg>
+  </div>
+  <div class="panel">
+    <div class="kicker">// recent changes</div>
+    <h3>What moved this week.</h3>
+    <div class="list">
+      <div><strong>v0.14:</strong> new adaptive shard rebalancing guide.</div>
+      <div><strong>v0.13:</strong> streaming upserts promoted to GA.</div>
+      <div><strong>v0.12:</strong> multi-region recovery playbook revised.</div>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="kicker">// docs promise</div>
+    <h3>Documentation is part of the product surface.</h3>
+    <p style="color:var(--muted);margin:0">The Greg translation here is clarity with conviction: early quickstart, exact labels, and a quiet but deliberate visual system.</p>
+  </div>
+</section>
+</body>
+</html>

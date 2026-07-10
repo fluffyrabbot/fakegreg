@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MeshDB Pricing</title>
+<style>
+:root{--bg:#090b10;--panel:#11151d;--line:#202733;--fg:#eef2f7;--muted:#8a95a7}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,sans-serif}.wrap{max-width:1180px;margin:0 auto;padding:0 24px 80px}
+.hero{padding:56px 0 34px;border-bottom:1px solid var(--line)}.kicker{font:12px monospace;color:#8793a7;margin-bottom:8px}.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:24px;align-items:start}
+h1{font-size:44px;line-height:1.04;margin:0 0 12px}.sub{color:#a9b4c6;font-size:17px;max-width:680px}.panel,.card{background:var(--panel);border:1px solid var(--line);border-radius:20px}.panel{padding:20px}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.num{font-size:28px;font-weight:700}.lab{font-size:12px;color:var(--muted);margin-top:4px}.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;padding:30px 0}
+.card{padding:22px}.tag{font:10px monospace;color:#8b97ab;margin-bottom:8px}.price{font-size:38px;font-weight:700;margin:8px 0}.detail{font-size:14px;color:var(--muted)}ul{padding:0;list-style:none;display:grid;gap:8px;color:#d9e4ff}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.bar{padding:8px 12px;background:#151a23;border-bottom:1px solid #1d2330;font-size:12px}.code{overflow:hidden}pre{margin:0;padding:14px;font-size:13px;color:#dbe6ff;overflow:auto;background:#0d1017}
+svg{display:block;width:100%;height:auto;margin-top:16px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <div class="kicker">// pricing without hand-waving</div>
+    <div class="hero-grid">
+      <div>
+        <h1>Pay for the grid you actually run.</h1>
+        <p class="sub">MeshDB pricing is built around regional sync, operator confidence, and privacy boundaries. No toy tiers. No mystery overages. Just clear deployment shapes.</p>
+      </div>
+      <div class="panel">
+        <div class="metrics">
+          <div><div class="num">14</div><div class="lab">regions on launch day</div></div>
+          <div><div class="num">23ms</div><div class="lab">median sync latency</div></div>
+          <div><div class="num">0</div><div class="lab">fallback replicas</div></div>
+        </div>
+        <svg viewBox="0 0 360 120" role="img" aria-label="Pricing topology">
+          <path d="M20 80L100 48L180 66L260 30L340 54" fill="none" stroke="#8eaefb" stroke-width="3"/>
+          <circle cx="20" cy="80" r="5" fill="#dce7ff"/><circle cx="100" cy="48" r="5" fill="#dce7ff"/><circle cx="180" cy="66" r="5" fill="#dce7ff"/><circle cx="260" cy="30" r="5" fill="#dce7ff"/><circle cx="340" cy="54" r="5" fill="#dce7ff"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+  <section>
+    <div class="kicker">// the plans</div>
+    <div class="plans">
+      <div class="card"><div class="tag">TEAM STARTER</div><h2>Launch</h2><div class="price">$1.8k <span class="detail">/ month</span></div><p>For teams bringing the first regional sync workload to production.</p><ul><li>◇ 3 regions included</li><li>◇ 200M synced rows</li><li>◇ Managed failover</li></ul></div>
+      <div class="card"><div class="tag">DEFAULT PRODUCTION</div><h2>Grid</h2><div class="price">$8.4k <span class="detail">/ month</span></div><p>For products that need credible cross-region latency and operator controls.</p><ul><li>◇ 12 regions included</li><li>◇ 2.5B synced rows</li><li>◇ Private peering + replay controls</li></ul></div>
+      <div class="card"><div class="tag">ENTERPRISE + RESIDENCY</div><h2>Sovereign</h2><div class="price">Custom</div><p>For regulated deployments with residency, dedicated control planes, and hands-on support.</p><ul><li>◇ Regional isolation</li><li>◇ Dedicated support channel</li><li>◇ Deployment reviews</li></ul></div>
+    </div>
+  </section>
+  <section class="grid">
+    <div class="panel code"><div class="bar">// the mechanism</div><pre>meshdb regions enable \
+  --plan grid \
+  --regions us-east-1,eu-west-1,ap-southeast-1</pre></div>
+    <div class="panel"><div class="kicker">// enterprise mechanics</div><h3>Sovereign deployments include the serious parts.</h3><p style="color:var(--muted)">Residency-aware region maps, audited replay controls, direct architecture review, and operator access designed for regulated teams.</p><div style="display:flex;gap:12px;margin-top:18px"><a href="#contact-sales" style="display:inline-block;background:#eef2ff;color:#05070c;padding:10px 14px;border-radius:10px;text-decoration:none;font-weight:600">Talk to sales</a><a href="#start-grid" style="display:inline-block;border:1px solid var(--line);color:#dbe6ff;padding:10px 14px;border-radius:10px;text-decoration:none">Start with Grid</a></div></div>
+  </section>
+</div>
+</body>
+</html>
