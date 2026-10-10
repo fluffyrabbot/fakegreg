@@ -1,0 +1,6 @@
+steps:
+  - label: ":test_tube: Full verification"
+    command: .buildkite/verify.sh
+    timeout_in_minutes: 40
+    agents:
+      queue: fleet-pilot-linux

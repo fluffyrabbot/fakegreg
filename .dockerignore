@@ -1,0 +1,15 @@
+
+.git
+**/node_modules
+.env
+.env.*
+!.env.example
+**/.next
+**/dist
+**/.turbo
+**/.wrangler
+**/__pycache__
+**/.venv
+.buildkite-artifacts
+playwright-report
+test-results
