@@ -1,0 +1,7 @@
+services:
+  verify:
+    build:
+      context: ..
+      dockerfile: .buildkite/Dockerfile
+    init: true
+    shm_size: 1gb
