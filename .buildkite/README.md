@@ -11,9 +11,9 @@ files or agent/checkout credentials. Compose services, networks, and volumes are
 removed on success, failure, or cancellation. Any available browser failure reports
 are uploaded through Buildkite and retained for the organization's 30-day period.
 
-Actions remains in place until the replacement PR suite is verified; cutover then
-removes its workflows and requires a successful merged default-branch build before
-repository Actions is disabled. Historical Git branches remain intact.
+Buildkite replaces GitHub Actions for this repository. The replacement PR suite
+was verified before removing the workflows. Repository Actions is disabled only
+after the merged default-branch build also passes. Historical Git branches remain intact.
 
 ## Dependency refresh
 
